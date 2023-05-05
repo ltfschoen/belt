@@ -3,8 +3,7 @@ import {defineConfig} from 'rollup';
 
 export default defineConfig({
 	input: [
-		'src/belt.ts',
-		'src/data.ts',
+		'src/main.ts',
 	],
 	output: {
 		dir: 'dist',

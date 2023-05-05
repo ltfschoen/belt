@@ -7,15 +7,11 @@
     "name": "Blake Regalia",
     "email": "blake.regalia@gmail.com"
   },
-  "browser": "dist/belt.mjs",
-  "types": "dist/belt.d.ts",
+  "module": "dist/main.mjs",
+  "types": "dist/main.d.ts",
   "files": [
     "dist/*"
   ],
-  "exports": {
-    ".": "./dist/belt.mjs",
-    "./*.mjs": "./dist/*.mjs"
-  },
   "scripts": {
     "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "dev": "yarn build -w"
