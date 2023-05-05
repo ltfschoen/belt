@@ -1,0 +1,38 @@
+{
+  "name": "@solar-republic/belt",
+  "version": "0.1.0",
+  "repository": "SolarRepublic/belt",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Blake Regalia",
+    "email": "blake.regalia@gmail.com"
+  },
+  "browser": "dist/belt.mjs",
+  "types": "dist/belt.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "exports": {
+    ".": "./dist/belt.mjs",
+    "./*.mjs": "./dist/*.mjs"
+  },
+  "scripts": {
+    "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "dev": "yarn build -w"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.0",
+    "@types/node": "^18.16.3",
+    "@types/web": "^0.0.99",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.39.0",
+    "eslint-plugin-i": "^2.27.5-1",
+    "eslint-plugin-modules-newline": "^0.0.6",
+    "eslint-plugin-typescript-sort-keys": "^2.3.0",
+    "rollup": "^3.21.5",
+    "ts-node": "^10.9.1",
+    "ts-toolbelt": "^9.6.0",
+    "typescript": "^5.0.4"
+  }
+}
