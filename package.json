@@ -1,5 +1,6 @@
 {
   "name": "@solar-republic/belt",
+  "type": "module",
   "version": "0.1.2",
   "repository": "SolarRepublic/belt",
   "license": "Apache-2.0",
@@ -8,6 +9,7 @@
     "email": "blake.regalia@gmail.com"
   },
   "module": "dist/main.mjs",
+  "main": "dist/main.mjs",
   "types": "dist/main.d.ts",
   "files": [
     "dist/*"
