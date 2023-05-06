@@ -253,7 +253,7 @@ export const hex_to_buffer = (sx_hex: string): Uint8Array => {
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64 = (atu8_buffer: Uint8Array): string => globalThis.btoa(buffer_to_string8(atu8_buffer));
+export const buffer_to_base64 = (atu8_buffer: Uint8Array): string => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join(''));
 
 
 /**
@@ -261,23 +261,7 @@ export const buffer_to_base64 = (atu8_buffer: Uint8Array): string => globalThis.
  * @param sx_buffer input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_buffer = (sx_buffer: string): Uint8Array => string8_to_buffer(globalThis.atob(sx_buffer));
-
-
-/**
- * Converts the given buffer to a UTF-8 friendly compact string.
- * @param atu8_buffer input buffer
- * @returns output string
- */
-export const buffer_to_string8 = (atu8_buffer: Uint8Array): string => {
-	// benchmarks indicate string building performs better than array map/join
-	let sx_buffer = '';
-	for(const xb_byte of atu8_buffer) {
-		sx_buffer += sfcc(xb_byte);
-	}
-
-	return sx_buffer;
-};
+export const base64_to_buffer = (sx_buffer: string): Uint8Array => new Uint8Array(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
 
 
 /**
