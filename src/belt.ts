@@ -166,7 +166,7 @@ export const oder = <
 export const oderac = <
 	w_out extends any,
 	w_value extends any,
->(h_thing: Dict<w_value>, f_concat: (si_key: string, w_value: w_value, i_entry: number) => w_out, b_add_undefs=false): w_out[] => ode(h_thing).reduce<w_out[]>((a_out, [si_key, w_value], i_entry) => {
+>(h_thing: Dict<w_value>, f_concat: (si_key: string, w_value: w_value, i_entry: number) => w_out, b_add_undefs=false): w_out[] => ode(h_thing).reduce<w_out[]>((a_out: w_out[], [si_key, w_value], i_entry) => {
 	const w_add = f_concat(si_key, w_value, i_entry);
 	if('undefined' !== typeof w_add || b_add_undefs) {
 		a_out.push(w_add);
@@ -221,7 +221,7 @@ export const fodemtv = <
  */
 export const timeout = (xt_wait: number): Promise<void> => new Promise((fk_resolve) => {
 	setTimeout(() => {
-		fk_resolve();
+		fk_resolve(void 0);
 	}, xt_wait);
 });
 
@@ -254,7 +254,7 @@ export const timeout_exec = <
 		});
 
 		// start waiting
-	const i_pending = setTimeout(() => {
+	const i_pending = (setTimeout as Window['setTimeout'])(() => {
 			// mark as timed out
 		b_timed_out = true;
 
@@ -311,7 +311,7 @@ export const forever = <w_type=void>(w_type?: w_type): Promise<w_type> => new Pr
  */
 export const microtask = (): Promise<void> => new Promise((fk_resolve) => {
 	queueMicrotask(() => {
-		fk_resolve();
+		fk_resolve(void 0);
 	});
 });
 
@@ -413,6 +413,7 @@ type TypedArray =
  */
 export const shuffle = <
 	w_list extends Array<any> | TypedArray,
+// eslint-disable-next-line @typescript-eslint/naming-convention
 >(a_items: w_list, f_random=random_int): w_list => {
 	let i_item = a_items.length;
 

@@ -4,7 +4,9 @@ import type {JsonValue} from './types';
 import {is_dict} from './belt';
 
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const S_UUID_V4 = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx';
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const R_UUID_V4 = /[xy]/g;
 
 // @ts-expect-error in case crypto global is not defined
@@ -75,7 +77,7 @@ export const zero_out = (atu8_data: number[] | Uint8Array | Uint16Array): void =
 
 	// make sure the engine does not optimize away the above memory wipe instruction
 	// @ts-expect-error signature IS compatible with both types
-	if(0 !== atu8_data.reduce((c, x) => c + x, 0)) throw new Error('Failed to zero out sensitive memory region');
+	if(0 !== atu8_data.reduce((c_sum: number, x_value: number) => c_sum + x_value, 0)) throw new Error('Failed to zero out sensitive memory region');
 };
 
 
@@ -153,15 +155,15 @@ export const buffer_to_json = (atu8_json: Uint8Array): JsonValue => JSON.parse(b
 
 /**
  * Encodes the given 32-bit integer in big-endian format to a new buffer.
- * @param n_uint 
+ * @param xg_uint 
  * @returns 
  */
-export const uint32_to_buffer_be = (n_uint: number | bigint): Uint8Array => {
+export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
 	// prep array buffer
 	const ab_buffer = new Uint32Array(1).buffer;
 
 	// write to buffer
-	new DataView(ab_buffer).setUint32(0, Number(n_uint), false);
+	new DataView(ab_buffer).setUint32(0, Number(xg_uint), false);
 
 	// wrap as uint8array
 	return new Uint8Array(ab_buffer);
@@ -212,8 +214,8 @@ export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
 };
 
 
-// cache function reference
-const sfcc = String.fromCharCode;
+// // cache function reference
+// const sfcc = String.fromCharCode;
 
 /**
  * Converts the given buffer to a hex string format in lowercase.
@@ -281,6 +283,7 @@ export const string8_to_buffer = (sx_buffer: string): Uint8Array => {
 
 
 // inspired by <https://github.com/ticlo/jsonesc/blob/master/dist/base93.js>
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const SX_CHARS_BASE93 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&'()*+,-./:;<=>?@[]^_`{|}~ ";
 
 /**
@@ -370,7 +373,9 @@ export const base93_to_buffer = (sx_buffer: string): Uint8Array => {
 
 
 // inspired by <https://github.com/pur3miish/base58-js>
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const SX_CHARS_BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const A_CHARS_BASE58 = (() => {
 	const a_out: number[] = Array(256).fill(-1);
 	for(let i_char=0; i_char<SX_CHARS_BASE58.length; i_char++) {
@@ -386,9 +391,9 @@ export const buffer_to_base58 = (atu8_buffer: Uint8Array): string => {
 	for(const xb_char of atu8_buffer) {
 		let xb_carry = xb_char;
 		for(let ib_sweep = 0; ib_sweep<a_out.length; ++ib_sweep) {
-			const x = (A_CHARS_BASE58[a_out[ib_sweep]] << 8) + xb_carry;
-			a_out[ib_sweep] = SX_CHARS_BASE58.charCodeAt(x % 58);
-			xb_carry = (x / 58) | 0;
+			const xb_value = (A_CHARS_BASE58[a_out[ib_sweep]] << 8) + xb_carry;
+			a_out[ib_sweep] = SX_CHARS_BASE58.charCodeAt(xb_value % 58);
+			xb_carry = (xb_value / 58) | 0;
 		}
 
 		while(xb_carry) {
@@ -411,29 +416,29 @@ export const buffer_to_base58 = (atu8_buffer: Uint8Array): string => {
 	return String.fromCharCode(...a_out);
 };
 
-export const base58_to_buffer = (sxb58_buffer: string): Uint8Array => {
-	if(!sxb58_buffer || 'string' !== typeof sxb58_buffer) {
-		throw new Error(`Expected base58 string but got “${sxb58_buffer}”`);
+export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
+	if(!sb58_buffer || 'string' !== typeof sb58_buffer) {
+		throw new Error(`Expected base58 string but got “${sb58_buffer}”`);
 	}
 
-	const m_invalid = sxb58_buffer.match(/[IOl0]/gmu);
+	const m_invalid = sb58_buffer.match(/[IOl0]/gmu);
 	if(m_invalid) {
 		throw new Error(`Invalid base58 character “${String(m_invalid)}”`);
 	}
 
-	const m_lz = sxb58_buffer.match(/^1+/gmu);
+	const m_lz = sb58_buffer.match(/^1+/gmu);
 	const nl_psz = m_lz ? m_lz[0].length : 0;
-	const nb_out = (((sxb58_buffer.length - nl_psz) * (Math.log(58) / Math.log(256))) + 1) >>> 0;
+	const nb_out = (((sb58_buffer.length - nl_psz) * (Math.log(58) / Math.log(256))) + 1) >>> 0;
 
 	return new Uint8Array([
 		...new Uint8Array(nl_psz),
-		...sxb58_buffer
+		...sb58_buffer
 			.match(/.{1}/gmu)!
 			.map(sxb58 => SX_CHARS_BASE58.indexOf(sxb58))
 			.reduce((atu8_out, ib_pos) => atu8_out.map((xb_char) => {
-				const x = (xb_char * 58) + ib_pos;
-				ib_pos = x >> 8;
-				return x;
+				const xb_tmp = (xb_char * 58) + ib_pos;
+				ib_pos = xb_tmp >> 8;
+				return xb_tmp;
 			}), new Uint8Array(nb_out))
 			.reverse()
 			.filter((b_last => xb_each => (b_last = b_last || !!xb_each))(false)),
