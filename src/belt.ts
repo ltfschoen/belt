@@ -1,6 +1,12 @@
 import type {Dict, JsonObject} from './types';
 
 /**
+ * Utility nil buffer constant
+ */
+export const ATU8_NIL = new Uint8Array(0);
+
+
+/**
  * The frequently-used "no-operation" function
  */
 export const F_NOOP = () => {};  // eslint-disable-line
