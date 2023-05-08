@@ -214,6 +214,21 @@ export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
 };
 
 
+/**
+ * Concatenate two Uint8Arrays together.
+ * @param atu8_buffer_a left side
+ * @param atu8_buffer_b right side
+ * @returns the concatenated output Uint8Array
+ */
+export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
+	const atu8_out = new Uint8Array(atu8_a.length + atu8_b.length);
+	atu8_out.set(atu8_a);
+	atu8_out.set(atu8_b, atu8_a.length);
+	return atu8_out;
+};
+
+
+
 // // cache function reference
 // const sfcc = String.fromCharCode;
 
