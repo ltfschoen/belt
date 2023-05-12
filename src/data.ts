@@ -1,6 +1,5 @@
 import type {JsonValue} from './types';
 
-
 import {is_dict} from './belt';
 
 
@@ -22,11 +21,19 @@ export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID():
 
 
 /**
+ * Helps reduce codesize
+ * @param a_args 
+ * @returns 
+ */
+export const buffer = (...a_args: any[]): Uint8Array => new Uint8Array(...a_args as [number]);
+
+
+/**
  * Performs SHA-256 hash on the given data.
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => new Uint8Array(await crypto.subtle.digest('SHA-256', atu8_data));
+export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffer(await crypto.subtle.digest('SHA-256', atu8_data));
 
 
 /**
@@ -47,7 +54,7 @@ export const sha256d = async(atu8_data: Uint8Array): Promise<Uint8Array> => {
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => new Uint8Array(await crypto.subtle.digest('SHA-512', atu8_data));
+export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffer(await crypto.subtle.digest('SHA-512', atu8_data));
 
 
 /**
@@ -64,7 +71,7 @@ export const hmac = async(atu8_sk: Uint8Array, atu8_message: Uint8Array, si_algo
 	}, false, ['sign']);
 
 	// construct hmac signature
-	return new Uint8Array(await crypto.subtle.sign('HMAC', dk_sign, atu8_message));
+	return buffer(await crypto.subtle.sign('HMAC', dk_sign, atu8_message));
 };
 
 
@@ -84,7 +91,7 @@ export const zero_out = (atu8_data: number[] | Uint8Array | Uint16Array): void =
 export const encode_length_prefix_u16 = (atu8_data: Uint8Array): Uint8Array => {
 	// prep buffer to serialize encoded extension
 	const atu8_encoded = concat([
-		new Uint8Array(2),  // 2 bytes for length prefix
+		buffer(2),  // 2 bytes for length prefix
 		atu8_data,
 	]);
 
@@ -166,7 +173,7 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
 	new DataView(ab_buffer).setUint32(0, Number(xg_uint), false);
 
 	// wrap as uint8array
-	return new Uint8Array(ab_buffer);
+	return buffer(ab_buffer);
 };
 
 /**
@@ -203,7 +210,7 @@ export const canonicalize_json = (w_json: JsonValue): JsonValue => {
  */
 export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
 	const nb_out = a_buffers.reduce((c_bytes, atu8_each) => c_bytes + atu8_each.byteLength, 0);
-	const atu8_out = new Uint8Array(nb_out);
+	const atu8_out = buffer(nb_out);
 	let ib_write = 0;
 	for(const atu8_each of a_buffers) {
 		atu8_out.set(atu8_each, ib_write);
@@ -221,7 +228,7 @@ export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
  * @returns the concatenated output Uint8Array
  */
 export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
-	const atu8_out = new Uint8Array(atu8_a.length + atu8_b.length);
+	const atu8_out = buffer(atu8_a.length + atu8_b.length);
 	atu8_out.set(atu8_a);
 	atu8_out.set(atu8_b, atu8_a.length);
 	return atu8_out;
@@ -237,14 +244,7 @@ export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
  * @param atu8_buffer input buffer
  * @returns output hex string
  */
-export const buffer_to_hex = (atu8_buffer: Uint8Array): string => {
-	let sx_hex = '';
-	for(const xb_byte of atu8_buffer) {
-		sx_hex += xb_byte.toString(16).padStart(2, '0');
-	}
-
-	return sx_hex;
-};
+export const buffer_to_hex = (atu8_buffer: Uint8Array): string => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '');
 
 
 /**
@@ -252,17 +252,8 @@ export const buffer_to_hex = (atu8_buffer: Uint8Array): string => {
  * @param sx_hex input hex string
  * @returns output buffer
  */
-export const hex_to_buffer = (sx_hex: string): Uint8Array => {
-	const nl_hex = sx_hex.length;
-	if(0 !== nl_hex % 2) throw new Error(`Invalid hex string length is not a multiple of 2`);
-	const nb_buffer = nl_hex / 2;
-	const atu8_buffer = new Uint8Array(nb_buffer);
-	for(let i_byte=0; i_byte<nb_buffer; i_byte++) {
-		atu8_buffer[i_byte] = parseInt(sx_hex.slice(i_byte+i_byte, i_byte+i_byte+2), 16);
-	}
-
-	return atu8_buffer;
-};
+export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.length / 2)
+	.map((xb_ignore, i_char) => parseInt(sx_hex.slice(i_char * 2, (i_char * 2) + 2), 16));
 
 
 /**
@@ -278,7 +269,7 @@ export const buffer_to_base64 = (atu8_buffer: Uint8Array): string => btoa(Array.
  * @param sx_buffer input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_buffer = (sx_buffer: string): Uint8Array => new Uint8Array(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
+export const base64_to_buffer = (sx_buffer: string): Uint8Array => buffer(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
 
 
 /**
@@ -288,7 +279,7 @@ export const base64_to_buffer = (sx_buffer: string): Uint8Array => new Uint8Arra
  */
 export const string8_to_buffer = (sx_buffer: string): Uint8Array => {
 	const nl_pairs = sx_buffer.length;
-	const atu8_buffer = new Uint8Array(nl_pairs);
+	const atu8_buffer = buffer(nl_pairs);
 	for(let i_read=0; i_read<nl_pairs; i_read++) {
 		atu8_buffer[i_read] = sx_buffer.charCodeAt(i_read);
 	}
@@ -445,8 +436,8 @@ export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
 	const nl_psz = m_lz ? m_lz[0].length : 0;
 	const nb_out = (((sb58_buffer.length - nl_psz) * (Math.log(58) / Math.log(256))) + 1) >>> 0;
 
-	return new Uint8Array([
-		...new Uint8Array(nl_psz),
+	return buffer([
+		...buffer(nl_psz),
 		...sb58_buffer
 			.match(/.{1}/gmu)!
 			.map(sxb58 => SX_CHARS_BASE58.indexOf(sxb58))
@@ -454,7 +445,7 @@ export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
 				const xb_tmp = (xb_char * 58) + ib_pos;
 				ib_pos = xb_tmp >> 8;
 				return xb_tmp;
-			}), new Uint8Array(nb_out))
+			}), buffer(nb_out))
 			.reverse()
 			.filter((b_last => xb_each => (b_last = b_last || !!xb_each))(false)),
 	]);
