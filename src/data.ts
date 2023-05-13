@@ -50,6 +50,16 @@ export const sha256d = async(atu8_data: Uint8Array): Promise<Uint8Array> => {
 
 
 /**
+ * Performs SHA-384 hash on the given data.
+ * @param atu8_data data to hash
+ * @returns the hash digest
+ */
+export async function sha384(atu8_data: Uint8Array): Promise<Uint8Array> {
+	return buffer(await crypto.subtle.digest('SHA-384', atu8_data));
+}
+
+
+/**
  * Performs SHA-512 hash on the given data.
  * @param atu8_data data to hash
  * @returns the hash digest
