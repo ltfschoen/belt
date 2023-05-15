@@ -277,7 +277,7 @@ export const timeout_exec = <
 
 export interface WithTimeoutConfig<w_value extends any> {
 	duration: number;
-	trip: VoidFunction;
+	trip: () => void;
 	run: () => Promise<w_value>;
 }
 
