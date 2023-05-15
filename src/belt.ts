@@ -135,17 +135,17 @@ export const escape_regex = (s_input: string): string => s_input.replace(/[-[\]{
  * Typed alias to `Object.entries`
  */
 export const ode = <
-	h_object extends Record<string, any>,
-	as_keys extends Extract<keyof h_object, string>=Extract<keyof h_object, string>,
->(h_object: h_object): Array<[as_keys, h_object[as_keys]]> => Object.entries(h_object) as Array<[as_keys, h_object[as_keys]]>;
+	si_key extends string,
+	w_value extends any,
+>(h_object: Record<si_key, w_value>): Array<[si_key, w_value]> => Object.entries(h_object) as Array<[si_key, w_value]>;
 
 
 /**
  * Typed alias to `Object.fromEntries`
  */
 export const ofe = <
-	as_keys extends string=string,
-	w_values extends any=any,
+	as_keys extends string,
+	w_values extends any,
 >(a_entries: Array<[as_keys, w_values]>): Record<as_keys, w_values> => Object.fromEntries(a_entries) as Record<as_keys, w_values>;
 
 
@@ -162,8 +162,9 @@ type ReduceParameters<
  */
 export const oder = <
 	w_out extends any,
+	si_key extends string,
 	w_value extends any,
->(h_thing: Dict<w_value>, f_reduce: ReduceParameters[0], w_init: w_out): w_out => ode(h_thing).reduce(f_reduce, w_init) as w_out;
+>(h_thing: Record<si_key, w_value>, f_reduce: ReduceParameters[0], w_init: w_out): w_out => ode(h_thing).reduce(f_reduce, w_init) as w_out;
 
 
 /**
@@ -171,8 +172,9 @@ export const oder = <
  */
 export const oderac = <
 	w_out extends any,
+	si_key extends string,
 	w_value extends any,
->(h_thing: Dict<w_value>, f_concat: (si_key: string, w_value: w_value, i_entry: number) => w_out, b_add_undefs=false): w_out[] => ode(h_thing).reduce<w_out[]>((a_out: w_out[], [si_key, w_value], i_entry) => {
+>(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out, b_add_undefs=false): w_out[] => ode(h_thing).reduce<w_out[]>((a_out: w_out[], [si_key, w_value], i_entry) => {
 	const w_add = f_concat(si_key, w_value, i_entry);
 	if('undefined' !== typeof w_add || b_add_undefs) {
 		a_out.push(w_add);
@@ -187,8 +189,9 @@ export const oderac = <
  */
 export const oderaf = <
 	w_out extends any,
+	si_key extends string,
 	w_value extends any,
->(h_thing: Dict<w_value>, f_concat: (si_key: string, w_value: w_value, i_entry: number) => w_out[]): w_out[] => ode(h_thing).reduce((a_out, [si_key, w_value], i_entry) => [
+>(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out[]): w_out[] => ode(h_thing).reduce((a_out, [si_key, w_value], i_entry) => [
 	...a_out,
 	...f_concat(si_key, w_value, i_entry),
 ], []);
@@ -198,15 +201,14 @@ export const oderaf = <
  * Reduce object entries to an object via merging
  */
 export const oderom = <
-	w_out extends any,
-	h_thing extends Record<string | symbol, any>,
-	as_keys_in extends keyof h_thing,
-	w_value_in extends h_thing[as_keys_in],
-	as_keys_out extends string | symbol,
->(h_thing: h_thing, f_merge: (si_key: as_keys_in, w_value: w_value_in) => Record<as_keys_out, w_out>): Record<as_keys_out, w_out> => ode(h_thing).reduce((h_out, [si_key, w_value]) => ({
+	w_value_out extends any,
+	si_key_in extends string,
+	w_value_in extends any,
+	si_key_out extends string,
+>(h_thing: Record<si_key_in, w_value_in>, f_merge: (si_key: si_key_in, w_value: w_value_in) => Record<si_key_in, w_value_out>): Record<si_key_out, w_value_out> => ode(h_thing).reduce((h_out, [si_key, w_value]) => ({
 	...h_out,
-	...f_merge(si_key as string as as_keys_in, w_value),
-}), {}) as Record<as_keys_out, w_out>;
+	...f_merge(si_key, w_value),
+}), {}) as Record<si_key_out, w_value_out>;
 
 
 /**
@@ -214,12 +216,15 @@ export const oderom = <
  */
 export const fodemtv = <
 	w_out extends any,
+	si_key extends string,
 	w_value extends any,
->(h_thing: Dict<w_value>, f_transform: (w_value: w_value, si_key?: string) => w_out): {
-	[si_key in keyof typeof h_thing]: w_out;
+>(h_thing: Record<si_key, w_value>, f_transform: (w_value: w_value, si_key?: si_key) => w_out): {
+	[si_key_out in keyof typeof h_thing]: w_out;
 } => Object.fromEntries(
 	ode(h_thing).map(([si_key, w_value]) => [si_key, f_transform(w_value, si_key)])
-);
+) as {
+	[si_key_out in keyof typeof h_thing]: w_out;
+};
 
 
 /**
