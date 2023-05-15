@@ -191,6 +191,7 @@ export const oderaf = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
+	// @ts-ignore
 >(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out[]): w_out[] => ode(h_thing).reduce((a_out, [si_key, w_value], i_entry) => [
 	...a_out,
 	...f_concat(si_key, w_value, i_entry),
@@ -336,6 +337,7 @@ export const defer = <w_return extends any=any>(): [Promise<w_return>, (w_return
 		fe_reject = fe;
 	});
 
+	// @ts-ignore
 	return [dp_promise, (w_return: w_return, e_reject?: Error) => {
 		if(e_reject) {
 			fe_reject(e_reject);

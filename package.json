@@ -20,6 +20,8 @@
     "dev": "yarn build -w"
   },
   "devDependencies": {
+    "@blake.regalia/eslint-config-elite": "^0.0.2",
+    "@blake.regalia/tsconfig": "^0.0.1",
     "@rollup/plugin-typescript": "^11.1.0",
     "@types/node": "^18.16.3",
     "@types/web": "^0.0.99",
