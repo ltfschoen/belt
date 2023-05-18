@@ -3,6 +3,7 @@ import type {Dict, JsonObject} from './types';
 /**
  * Utility nil buffer constant
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const ATU8_NIL = new Uint8Array(0);
 
 
@@ -191,11 +192,11 @@ export const oderaf = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
-	// @ts-ignore
 >(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out[]): w_out[] => ode(h_thing).reduce((a_out, [si_key, w_value], i_entry) => [
 	...a_out,
 	...f_concat(si_key, w_value, i_entry),
-], []);
+// eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+], [] as w_out[]);
 
 
 /**
@@ -328,7 +329,7 @@ export const microtask = (): Promise<void> => new Promise((fk_resolve) => {
 });
 
 
-export const defer = <w_return extends any=any>(): [Promise<w_return>, (w_return: w_return | null, e_reject?: Error) => void] => {
+export const defer = <w_return extends any=any>(): [Promise<w_return>, (w_return: w_return, e_reject?: Error) => void] => {
 	let fk_resolve: (w_return: w_return) => void;
 	let fe_reject: (e_reject: Error) => void;
 
@@ -337,7 +338,7 @@ export const defer = <w_return extends any=any>(): [Promise<w_return>, (w_return
 		fe_reject = fe;
 	});
 
-	// @ts-ignore
+
 	return [dp_promise, (w_return: w_return, e_reject?: Error) => {
 		if(e_reject) {
 			fe_reject(e_reject);

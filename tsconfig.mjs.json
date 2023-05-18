@@ -3,14 +3,13 @@
 
 	"compilerOptions": {
 		"baseUrl": ".",
-		"outDir": "dist/min",
+		"outDir": "dist/mjs",
 
 		"declaration": true,
-		"declarationDir": "dist/min"
+		"declarationDir": "dist/mjs"
 	},
 
 	"include": [
-		"src/**/*.ts",
-		"rollup.config.ts"
+		"src/**/*.ts"
 	]
 }

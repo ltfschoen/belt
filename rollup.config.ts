@@ -6,9 +6,8 @@ export default defineConfig({
 		'src/main.ts',
 	],
 	output: {
-		dir: 'dist',
+		dir: 'dist/min',
 		format: 'esm',
-		entryFileNames: '[name].mjs',
 	},
 	plugins: [
 		typescript({
