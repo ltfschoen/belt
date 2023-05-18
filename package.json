@@ -7,7 +7,7 @@
     "name": "Blake Regalia",
     "email": "blake.regalia@gmail.com"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/cjs/main.js",
   "module": "dist/mjs/main.js",
   "types": "dist/mjs/main.d.ts",
