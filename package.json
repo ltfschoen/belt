@@ -25,7 +25,7 @@
     "bundle": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript"
   },
   "devDependencies": {
-    "@blake.regalia/eslint-config-elite": "^0.2.4",
+    "@blake.regalia/eslint-config-elite": "^0.2.5",
     "@blake.regalia/tsconfig": "^0.1.2",
     "@rollup/plugin-typescript": "^11.1.1",
     "@types/node": "^20.2.1",

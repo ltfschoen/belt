@@ -3,8 +3,8 @@ import type {Dict, JsonObject} from './types';
 /**
  * Utility nil buffer constant
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const ATU8_NIL = new Uint8Array(0);
+// eslint-disable-next-line @typescript-eslint/naming-convention,spaced-comment
+export const ATU8_NIL = /*#__PURE__*/new Uint8Array(0);
 
 
 /**
