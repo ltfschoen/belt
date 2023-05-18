@@ -389,7 +389,7 @@ export const base93_to_buffer = (sx_buffer: string): Uint8Array => {
 // inspired by <https://github.com/pur3miish/base58-js>
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const SX_CHARS_BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-// eslint-disable-next-line @typescript-eslint/naming-convention,spaced-comment
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const A_CHARS_BASE58 = /*#__PURE__*/(() => {
 	const a_out = Array(256).fill(-1);
 	let i_char = 0;
