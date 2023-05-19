@@ -21,6 +21,11 @@ export type Arrayable<w_value> = w_value | Array<w_value>;
  */
 export type Nilable<w_value> = w_value | null | undefined;
 
+/**
+ * Shortcut for another common type pattern
+ */
+export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
+
 
 
 /**
