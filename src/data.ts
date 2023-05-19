@@ -1,6 +1,6 @@
-import type {JsonObject, JsonValue} from './types';
+import type {Base58, Base64, Base93, HexLower, JsonObject, JsonValue} from './types';
 
-import {is_dict, is_dict_es, ode, ofe} from './belt';
+import {is_dict_es, ode, ofe} from './belt';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -149,7 +149,7 @@ export const base64_to_text = (sx_buffer: string): string => buffer_to_text(base
  * @param s_text text to encode
  * @returns output base64-encoded string
  */
-export const text_to_base64 = (s_text: string): string => buffer_to_base64(text_to_buffer(s_text));
+export const text_to_base64 = (s_text: string): Base64 => buffer_to_base64(text_to_buffer(s_text));
 
 
 /**
@@ -256,7 +256,7 @@ export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
  * @param atu8_buffer input buffer
  * @returns output hex string
  */
-export const buffer_to_hex = (atu8_buffer: Uint8Array): string => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '');
+export const buffer_to_hex = (atu8_buffer: Uint8Array): HexLower => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '') as HexLower;
 
 
 /**
@@ -273,7 +273,7 @@ export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.lengt
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64 = (atu8_buffer: Uint8Array): string => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join(''));
+export const buffer_to_base64 = (atu8_buffer: Uint8Array): Base64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as Base64;
 
 
 /**
@@ -309,7 +309,7 @@ const SX_CHARS_BASE93 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  * @param atu8_buffer input buffer
  * @returns output base93-encoded string
  */
-export const buffer_to_base93 = (atu8_buffer: Uint8Array): string => {
+export const buffer_to_base93 = (atu8_buffer: Uint8Array): Base93 => {
 	let s_out = '';
 	const nb_buffer = atu8_buffer.byteLength;
 
@@ -344,7 +344,7 @@ export const buffer_to_base93 = (atu8_buffer: Uint8Array): string => {
 		}
 	}
 
-	return s_out;
+	return s_out as Base93;
 };
 
 
@@ -405,7 +405,7 @@ const A_CHARS_BASE58 = /*#__PURE__*/(() => {
 	return a_out;
 })();
 
-export const buffer_to_base58 = (atu8_buffer: Uint8Array): string => {
+export const buffer_to_base58 = (atu8_buffer: Uint8Array): Base58 => {
 	const a_out: number[] = [];
 
 	for(const xb_char of atu8_buffer) {
@@ -433,7 +433,7 @@ export const buffer_to_base58 = (atu8_buffer: Uint8Array): string => {
 
 	a_out.reverse();
 
-	return String.fromCharCode(...a_out);
+	return String.fromCharCode(...a_out) as Base58;
 };
 
 export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {

@@ -1,6 +1,43 @@
 import type {A} from 'ts-toolbelt';
 
 /**
+ * An integer string
+ */
+export type Uint128 = `${bigint}`;
+
+/**
+ * Lowercase hexadecimal string
+ */
+export type HexLower = A.Type<string, 'hex-lower'>;
+
+/**
+ * Uppercase hexadecimal string
+ */
+export type HexUpper = A.Type<string, 'hex-upper'>;
+
+/**
+ * Mixed case hexadecimal string
+ */
+export type HexMixed = HexLower | HexUpper;
+
+/**
+ * Base58 string
+ */
+export type Base58 = A.Type<string, 'base58'>;
+
+/**
+ * Base64 string
+ */
+export type Base64 = A.Type<string, 'base64'>;
+
+/**
+ * Base93 string
+ */
+export type Base93 = A.Type<string, 'base93'>;
+
+
+
+/**
  * Shortcut for a very common type pattern
  */
 export type Dict<w_value=string> = Record<string, w_value>;
