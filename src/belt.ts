@@ -176,7 +176,7 @@ export const ode: <
 export const ofe: <
 	as_keys extends string,
 	w_values extends any,
->(a_entries: Array<[as_keys, w_values]>) => Record<as_keys, w_values> = Object.fromEntries;
+>(a_entries: Iterable<[as_keys, w_values]>) => Record<as_keys, w_values> = Object.fromEntries;
 
 
 /**
