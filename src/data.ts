@@ -1,6 +1,6 @@
-import type {JsonValue} from './types';
+import type {JsonObject, JsonValue} from './types';
 
-import {is_dict} from './belt';
+import {is_dict, is_dict_es, ode, ofe} from './belt';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -184,6 +184,7 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
 	return buffer(ab_buffer);
 };
 
+
 /**
  * Decodes a 32-bit integer in big-endian format from a buffer (optionally at the given position).
  * @param n_uint 
@@ -191,19 +192,22 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
  */
 export const buffer_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): number => new DataView(atu8_buffer.buffer).getUint32(atu8_buffer.byteOffset + ib_offset, false);
 
+
 /**
  * Converts a JSON object into its canonical form.
  * @param w_json JSON-compatible value to canonicalize
  * @returns canonicalized JSON value
  */
-export const canonicalize_json = (w_json: JsonValue): JsonValue => {
-	if(is_dict(w_json)) {
+export const canonicalize_json = <
+	w_json extends JsonObject,
+>(w_json: w_json): w_json => {
+	if(is_dict_es(w_json)) {
 		// sort all keys
-		const h_sorted = Object.fromEntries(Object.entries(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
+		const h_sorted = ofe(ode(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
 
 		// traverse on children
 		for(const si_key in h_sorted) {
-			h_sorted[si_key] = canonicalize_json(h_sorted[si_key]);
+			h_sorted[si_key] = canonicalize_json(h_sorted[si_key] as JsonObject);
 		}
 	}
 

@@ -31,9 +31,9 @@ export const proper = (s_input: string): string => s_input.split(/[\s_]+/g).map(
 export const is_dict = (z: unknown): z is JsonObject => z? 'object' === typeof z && !Array.isArray(z): false;
 
 /**
- * More advanced test for whether an ES object is a plain object (dict) or not
+ * Strict test for whether an ES object is a plain object (dict) or not
  */
-export const is_dict_es = (z: unknown): z is JsonObject => z? 'object' === typeof z && Object === z.constructor: false;
+export const is_dict_es = (z: unknown): z is JsonObject => Object === z?.constructor;
 
 
 /**
@@ -222,7 +222,7 @@ export const fodemtv = <
 	w_value extends any,
 >(h_thing: Record<si_key, w_value>, f_transform: (w_value: w_value, si_key?: si_key) => w_out): {
 	[si_key_out in keyof typeof h_thing]: w_out;
-} => Object.fromEntries(
+} => ofe(
 	ode(h_thing).map(([si_key, w_value]) => [si_key, f_transform(w_value, si_key)])
 ) as {
 	[si_key_out in keyof typeof h_thing]: w_out;
