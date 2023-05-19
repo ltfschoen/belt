@@ -199,7 +199,7 @@ export const buffer_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): numbe
  * @returns canonicalized JSON value
  */
 export const canonicalize_json = <
-	w_json extends JsonObject,
+	w_json extends JsonValue,
 >(w_json: w_json): w_json => {
 	if(is_dict_es(w_json)) {
 		// sort all keys
@@ -209,6 +209,11 @@ export const canonicalize_json = <
 		for(const si_key in h_sorted) {
 			h_sorted[si_key] = canonicalize_json(h_sorted[si_key] as JsonObject);
 		}
+
+		w_json = h_sorted as w_json;
+	}
+	else if(Array.isArray(w_json)) {
+		w_json = w_json.map(w_item => canonicalize_json(w_item)) as w_json;
 	}
 
 	return w_json;
