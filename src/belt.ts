@@ -137,21 +137,46 @@ export const escape_regex = (s_input: string): string => s_input.replace(/[-[\]{
 
 
 /**
+ * Typed alias to `Object.create`
+ */
+export const oc: <
+	h_source extends object | null,
+>(h_object: h_source, gc_props?: PropertyDescriptorMap) => object = Object.create;
+
+
+/**
+ * Typed alias to `Object.assign`
+ */
+export const oda: <
+	h_object extends {},
+	h_extend extends {},
+>(h_object: h_object, h_extend: h_extend) => h_object & h_extend = Object.assign;
+
+
+/**
+ * Typed alias to `Object.values`
+ */
+export const odv: <
+	w_value extends any,
+>(h_object: Record<any, w_value>) => Array<[w_value]> = Object.values;
+
+
+/**
  * Typed alias to `Object.entries`
  */
-export const ode = <
+export const ode: <
 	si_key extends string,
 	w_value extends any,
->(h_object: Record<si_key, w_value>): Array<[si_key, w_value]> => Object.entries(h_object) as Array<[si_key, w_value]>;
+>(h_object: Record<si_key, w_value>) => Array<[si_key, w_value]> = Object.entries;
 
 
 /**
  * Typed alias to `Object.fromEntries`
  */
-export const ofe = <
+export const ofe: <
 	as_keys extends string,
 	w_values extends any,
->(a_entries: Array<[as_keys, w_values]>): Record<as_keys, w_values> => Object.fromEntries(a_entries) as Record<as_keys, w_values>;
+>(a_entries: Array<[as_keys, w_values]>) => Record<as_keys, w_values> = Object.fromEntries;
 
 
 /**
@@ -238,7 +263,7 @@ export const fodemtv = <
  */
 export const timeout = (xt_wait: number): Promise<void> => new Promise((fk_resolve) => {
 	setTimeout(() => {
-		fk_resolve(void 0);
+		fk_resolve(__UNDEFINED);
 	}, xt_wait);
 });
 
@@ -276,7 +301,7 @@ export const timeout_exec = <
 		b_timed_out = true;
 
 			// resolve promise
-		fk_resolve([void 0, 1]);
+		fk_resolve([__UNDEFINED, 1]);
 	}, xt_wait);
 });
 
@@ -328,7 +353,7 @@ export const forever = <w_type=void>(w_type?: w_type): Promise<w_type> => new Pr
  */
 export const microtask = (): Promise<void> => new Promise((fk_resolve) => {
 	queueMicrotask(() => {
-		fk_resolve(void 0);
+		fk_resolve(__UNDEFINED);
 	});
 });
 
@@ -379,7 +404,7 @@ export const defer_many = <
 		},
 		reject(h_rejects) {
 			for(const si_key in h_rejects) {
-				h_mapped[si_key]?.[1](void 0, h_rejects[si_key]);
+				h_mapped[si_key]?.[1](__UNDEFINED, h_rejects[si_key]);
 			}
 		},
 	};
