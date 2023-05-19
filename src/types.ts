@@ -106,3 +106,15 @@ export type JsonValue<w_inject extends any=never> =
  * Removes JSON interfaces from a type
  */
 export type RemoveJsonInterfaces<w_type> = Exclude<A.Compute<Exclude<Extract<w_type, object>, JsonArray>>, JsonObject>;
+
+/**
+ * Reinterprets the given type as being JSON-compatible
+ */
+export type AsJson<
+	z_test extends JsonValue | {} | {}[],
+> = z_test extends JsonValue? z_test
+	: z_test extends Array<infer w_type>
+		? AsJson<w_type>[]
+		: {
+			[si_each in keyof z_test]: AsJson<z_test[si_each]>;
+		};
