@@ -7,6 +7,10 @@ import type {Dict, JsonObject} from './types';
 export const ATU8_NIL = /*#__PURE__*/new Uint8Array(0);
 
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const __UNDEFINED = void 0;
+
+
 /**
  * The frequently-used "no-operation" function
  */
