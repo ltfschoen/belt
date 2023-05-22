@@ -180,11 +180,16 @@ export const ofe: <
 
 
 /**
- * Helper type for defining the expected type for `[].reduce` alias
+ * Map object entries
  */
-type ReduceParameters<
-	w_value extends any=any,
-> = Parameters<Array<w_value>['reduce']>;
+export const odem = <
+	w_out extends any,
+	si_key extends string,
+	w_value extends any,
+>(
+	h_object: Record<si_key, w_value>,
+	f_map: (g_entry: [si_key, w_value], i_index: number, a_all: [si_key, w_value][]) => w_out
+): w_out[] => ode(h_object).map(f_map);
 
 
 /**
@@ -194,21 +199,30 @@ export const oder = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
->(h_thing: Record<si_key, w_value>, f_reduce: ReduceParameters[0], w_init: w_out): w_out => ode(h_thing).reduce(f_reduce, w_init) as w_out;
+>(
+	h_thing: Record<si_key, w_value>,
+	f_reduce: (w_prev: w_out, g_entry: [si_key, w_value], i_index: number, a_all: [si_key, w_value][]) => w_out,
+	w_init: w_out
+): w_out => ode(h_thing).reduce(f_reduce, w_init);
 
 
 /**
- * Reduce object entries to an array via concatenation
+ * Reduce object entries to an array via concatenation (with filtering)
  */
 export const oderac = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
->(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out, b_add_undefs=false): w_out[] => ode(h_thing).reduce<w_out[]>((a_out: w_out[], [si_key, w_value], i_entry) => {
+>(
+	h_thing: Record<si_key, w_value>,
+	f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out,
+	b_add_undefs=false
+): w_out[] => oder(h_thing, (a_out: w_out[], [si_key, w_value], i_entry) => {
+	// invoke callback and capture return value
 	const w_add = f_concat(si_key, w_value, i_entry);
-	if('undefined' !== typeof w_add || b_add_undefs) {
-		a_out.push(w_add);
-	}
+
+	// add result to array iff not undefined or if undefined values are explictly allowed
+	if(__UNDEFINED === w_add || b_add_undefs) a_out.push(w_add);
 
 	return a_out;
 }, []);
@@ -221,10 +235,12 @@ export const oderaf = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
->(h_thing: Record<si_key, w_value>, f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out[]): w_out[] => ode(h_thing).reduce((a_out, [si_key, w_value], i_entry) => [
+>(
+	h_thing: Record<si_key, w_value>,
+	f_concat: (si_key: si_key, w_value: w_value, i_entry: number) => w_out[]
+): w_out[] => oder(h_thing, (a_out, [si_key, w_value], i_entry) => [
 	...a_out,
 	...f_concat(si_key, w_value, i_entry),
-// eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
 ], [] as w_out[]);
 
 
@@ -236,7 +252,10 @@ export const oderom = <
 	si_key_in extends string,
 	w_value_in extends any,
 	si_key_out extends string,
->(h_thing: Record<si_key_in, w_value_in>, f_merge: (si_key: si_key_in, w_value: w_value_in) => Record<si_key_in, w_value_out>): Record<si_key_out, w_value_out> => ode(h_thing).reduce((h_out, [si_key, w_value]) => ({
+>(
+	h_thing: Record<si_key_in, w_value_in>,
+	f_merge: (si_key: si_key_in, w_value: w_value_in) => Record<si_key_in, w_value_out>
+): Record<si_key_out, w_value_out> => oder(h_thing, (h_out, [si_key, w_value]) => ({
 	...h_out,
 	...f_merge(si_key, w_value),
 }), {}) as Record<si_key_out, w_value_out>;
@@ -249,10 +268,13 @@ export const fodemtv = <
 	w_out extends any,
 	si_key extends string,
 	w_value extends any,
->(h_thing: Record<si_key, w_value>, f_transform: (w_value: w_value, si_key?: si_key) => w_out): {
+>(
+	h_thing: Record<si_key, w_value>,
+	f_transform: (w_value: w_value, si_key?: si_key) => w_out
+): {
 	[si_key_out in keyof typeof h_thing]: w_out;
 } => ofe(
-	ode(h_thing).map(([si_key, w_value]) => [si_key, f_transform(w_value, si_key)])
+	odem(h_thing, ([si_key, w_value]) => [si_key, f_transform(w_value, si_key)])
 ) as {
 	[si_key_out in keyof typeof h_thing]: w_out;
 };
