@@ -1,6 +1,6 @@
 import type {Base58, Base64, Base93, HexLower, JsonObject, JsonValue} from './types';
 
-import {is_dict_es, ode, ofe} from './belt';
+import {is_dict_es, ode, ofe} from './belt.js';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

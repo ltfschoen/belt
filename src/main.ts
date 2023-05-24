@@ -1,3 +1,3 @@
-export * from './belt';
-export * from './data';
-export * from './types';
+export * from './belt.js';
+export * from './data.js';
+export * from './types.js';
