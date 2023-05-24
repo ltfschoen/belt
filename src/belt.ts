@@ -158,7 +158,7 @@ export const oda: <
  */
 export const odv: <
 	w_value extends any,
->(h_object: Record<any, w_value>) => Array<[w_value]> = Object.values;
+>(h_object: Record<any, w_value>) => w_value[] = Object.values;
 
 
 /**
@@ -167,7 +167,7 @@ export const odv: <
 export const ode: <
 	si_key extends string,
 	w_value extends any,
->(h_object: Record<si_key, w_value>) => Array<[si_key, w_value]> = Object.entries;
+>(h_object: Record<si_key, w_value>) => [si_key, w_value][] = Object.entries;
 
 
 /**
