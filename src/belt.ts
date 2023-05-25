@@ -222,7 +222,7 @@ export const oderac = <
 	const w_add = f_concat(si_key, w_value, i_entry);
 
 	// add result to array iff not undefined or if undefined values are explictly allowed
-	if(__UNDEFINED === w_add || b_add_undefs) a_out.push(w_add);
+	if(__UNDEFINED !== w_add || b_add_undefs) a_out.push(w_add);
 
 	return a_out;
 }, []);
