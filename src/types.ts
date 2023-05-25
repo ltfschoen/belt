@@ -118,3 +118,11 @@ export type AsJson<
 		: {
 			[si_each in keyof z_test]: AsJson<z_test[si_each]>;
 		};
+
+
+// augment JSON.parse
+declare global {
+	interface JSON {
+		parse(text: string, reviver?: (this: any, key: string, value: any) => any): JsonValue;
+	}
+}
