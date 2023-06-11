@@ -35,6 +35,11 @@ export type Base64 = A.Type<string, 'base64'>;
  */
 export type Base93 = A.Type<string, 'base93'>;
 
+/**
+ * Base222 string
+ */
+export type Base222 = A.Type<string, 'base222'>;
+
 
 
 /**

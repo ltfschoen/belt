@@ -20,12 +20,25 @@ export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID():
 };
 
 
+type Uint8ArrayConstructorParams = 
+	| [length: number]
+	| [array: ArrayLike<number> | ArrayBufferLike]
+	| [buffer: ArrayBufferLike, byteOffset?: number, length?: number];
+
 /**
  * Helps reduce codesize
  * @param a_args 
  * @returns 
  */
-export const buffer = (...a_args: any[]): Uint8Array => new Uint8Array(...a_args as [number]);
+export const buffer = (...a_args: Uint8ArrayConstructorParams): Uint8Array => new Uint8Array(...a_args as [number]);
+
+
+/**
+ * Helps reduce codesize
+ * @param a_args 
+ * @returns 
+ */
+export const dataview = (...a_args: [buffer: ArrayBufferLike, byteOffset?: number, byteLength?: number]): DataView => new DataView(...a_args as [ArrayBufferLike]);
 
 
 /**
