@@ -21,6 +21,7 @@ export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID():
 
 
 type Uint8ArrayConstructorParams = 
+	| []
 	| [length: number]
 	| [array: ArrayLike<number> | ArrayBufferLike]
 	| [buffer: ArrayBufferLike, byteOffset?: number, length?: number];
