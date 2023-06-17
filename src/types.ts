@@ -41,6 +41,11 @@ export type Base93 = A.Type<string, 'base93'>;
 export type Base222 = A.Type<string, 'base222'>;
 
 
+/**
+ * JSON string
+ */
+export type JsonString = A.Type<string, 'json'>;
+
 
 /**
  * Shortcut for a very common type pattern
