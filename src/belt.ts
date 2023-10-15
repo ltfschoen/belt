@@ -30,6 +30,23 @@ export const proper = (s_input: string): string => s_input.split(/[\s_]+/g).map(
 
 
 /**
+ * Converts given identifier to "snake_case"
+ */
+export const snake = (s_ident: string): string => s_ident.toUpperCase() === s_ident
+	// depending on upper or mixed case
+	? s_ident.toLowerCase().replace(/[^a-z0-9$]+/g, '_')
+	: s_ident.replace(/(?:[^a-zA-Z0-9$]*([A-Z])|[^a-zA-Z0-9$]+)/g, (s_ignore, s_cap) => '_'+(s_cap? s_cap.toLowerCase(): ''));
+
+/**
+ * Converts given identifier to "PascalCase"
+ */
+// if all uppercase; make lower
+export const pascal = (s_ident: string): string => (s_ident.toUpperCase() === s_ident? pascal(s_ident.toLowerCase()): s_ident)
+	// convert to pascal
+	.replace(/(?:^|[^A-Za-z0-9$])([\w0-9$])/g, (s_ignore, s_letter) => s_letter.toUpperCase());
+
+
+/**
  * Simple test for whether a deserialized JSON value is a plain object (dict) or not
  */
 export const is_dict = (z: unknown): z is JsonObject => z? 'object' === typeof z && !Array.isArray(z): false;
