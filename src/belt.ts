@@ -35,7 +35,7 @@ export const proper = (s_input: string): string => s_input.split(/[\s_]+/g).map(
 export const snake = (s_ident: string): string => s_ident.toUpperCase() === s_ident
 	// depending on upper or mixed case
 	? s_ident.toLowerCase().replace(/[^a-z0-9$]+/g, '_')
-	: s_ident.replace(/(?:[^a-zA-Z0-9$]*([A-Z])|[^a-zA-Z0-9$]+)/g, (s_ignore, s_cap) => '_'+(s_cap? s_cap.toLowerCase(): ''));
+	: s_ident.replace(/(?<!^)(?:[^a-zA-Z0-9$]*([A-Z])|[^a-zA-Z0-9$]+)/g, (s_ignore, s_cap) => '_'+(s_cap || '')).toLowerCase();
 
 /**
  * Converts given identifier to "PascalCase"
