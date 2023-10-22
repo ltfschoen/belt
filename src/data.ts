@@ -20,7 +20,7 @@ export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID():
 };
 
 
-type Uint8ArrayConstructorParams = 
+type Uint8ArrayConstructorParams =
 	| []
 	| [length: number]
 	| [array: ArrayLike<number> | ArrayBufferLike]
@@ -231,6 +231,22 @@ export const canonicalize_json = <
 	}
 
 	return w_json;
+};
+
+
+/**
+ * Attempts to parse the given JSON string, returning `undefined` on parse error instead of throwing
+ * @param sx_json 
+ * @returns 
+ */
+export const safe_json = <
+	w_out extends JsonValue=JsonValue,
+// @ts-expect-error no explicit return
+>(sx_json: string): w_out | undefined => {
+	try {
+		return JSON.parse(sx_json) as w_out;
+	}
+	catch(e_parse) {}
 };
 
 
