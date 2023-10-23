@@ -26,7 +26,7 @@ export const F_IDENTITY =(w: any) => w;  // eslint-disable-line
 /**
  * Creates a proper-case string
  */
-export const proper = (s_input: string): string => s_input.split(/[\s_]+/g).map(s => s[0].toUpperCase()+s.slice(1)).join(' ');
+export const proper = (s_input: string): string => s_input? s_input.split(/[\s_]+/g).map(s => s[0].toUpperCase()+s.slice(1)).join(' '): s_input;
 
 
 /**
