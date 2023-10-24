@@ -1,4 +1,5 @@
-import type {Base58, Base64, Base93, HexLower, JsonObject, JsonValue} from './types';
+import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
+import type {JsonObject, JsonValue} from './types';
 
 import {is_dict_es, ode, ofe} from './belt.js';
 
@@ -163,7 +164,7 @@ export const base64_to_text = (sx_buffer: string): string => buffer_to_text(base
  * @param s_text text to encode
  * @returns output base64-encoded string
  */
-export const text_to_base64 = (s_text: string): Base64 => buffer_to_base64(text_to_buffer(s_text));
+export const text_to_base64 = (s_text: string): NaiveBase64 => buffer_to_base64(text_to_buffer(s_text));
 
 
 /**
@@ -274,7 +275,7 @@ export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
  * @param atu8_buffer_b right side
  * @returns the concatenated output Uint8Array
  */
-export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
+export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array): Uint8Array => {
 	const atu8_out = buffer(atu8_a.length + atu8_b.length);
 	atu8_out.set(atu8_a);
 	atu8_out.set(atu8_b, atu8_a.length);
@@ -291,7 +292,7 @@ export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array) => {
  * @param atu8_buffer input buffer
  * @returns output hex string
  */
-export const buffer_to_hex = (atu8_buffer: Uint8Array): HexLower => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '') as HexLower;
+export const buffer_to_hex = (atu8_buffer: Uint8Array): NaiveHexLower => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '') as NaiveHexLower;
 
 
 /**
@@ -308,7 +309,7 @@ export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.lengt
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64 = (atu8_buffer: Uint8Array): Base64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as Base64;
+export const buffer_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as NaiveBase64;
 
 
 /**
@@ -344,7 +345,7 @@ const SX_CHARS_BASE93 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  * @param atu8_buffer input buffer
  * @returns output base93-encoded string
  */
-export const buffer_to_base93 = (atu8_buffer: Uint8Array): Base93 => {
+export const buffer_to_base93 = (atu8_buffer: Uint8Array): NaiveBase93 => {
 	let s_out = '';
 	const nb_buffer = atu8_buffer.byteLength;
 
@@ -379,7 +380,7 @@ export const buffer_to_base93 = (atu8_buffer: Uint8Array): Base93 => {
 		}
 	}
 
-	return s_out as Base93;
+	return s_out as NaiveBase93;
 };
 
 
@@ -440,7 +441,7 @@ const A_CHARS_BASE58 = /*#__PURE__*/(() => {
 	return a_out;
 })();
 
-export const buffer_to_base58 = (atu8_buffer: Uint8Array): Base58 => {
+export const buffer_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
 	const a_out: number[] = [];
 
 	for(const xb_char of atu8_buffer) {
@@ -468,7 +469,7 @@ export const buffer_to_base58 = (atu8_buffer: Uint8Array): Base58 => {
 
 	a_out.reverse();
 
-	return String.fromCharCode(...a_out) as Base58;
+	return String.fromCharCode(...a_out) as NaiveBase58;
 };
 
 export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {

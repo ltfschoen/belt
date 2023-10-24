@@ -1,50 +1,6 @@
 import type {A} from 'ts-toolbelt';
 
-/**
- * An integer string
- */
-export type Uint128 = `${bigint}`;
-
-/**
- * Lowercase hexadecimal string
- */
-export type HexLower = A.Type<string, 'hex-lower'>;
-
-/**
- * Uppercase hexadecimal string
- */
-export type HexUpper = A.Type<string, 'hex-upper'>;
-
-/**
- * Mixed case hexadecimal string
- */
-export type HexMixed = HexLower | HexUpper;
-
-/**
- * Base58 string
- */
-export type Base58 = A.Type<string, 'base58'>;
-
-/**
- * Base64 string
- */
-export type Base64 = A.Type<string, 'base64'>;
-
-/**
- * Base93 string
- */
-export type Base93 = A.Type<string, 'base93'>;
-
-/**
- * Base222 string
- */
-export type Base222 = A.Type<string, 'base222'>;
-
-
-/**
- * JSON string
- */
-export type JsonString = A.Type<string, 'json'>;
+import type {NaiveJsonString} from './strings';
 
 
 /**
@@ -130,9 +86,35 @@ export type AsJson<
 		};
 
 
-// augment JSON.parse
+// augment global functions
 declare global {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface JSON {
-		parse(text: string, reviver?: (this: any, key: string, value: any) => any): JsonValue;
+		/**
+		 * Converts a JavaScript Object Notation (JSON) string into an object.
+		 * @param text A valid JSON string.
+		 * @param reviver A function that transforms the results. This function is called for each member of the object.
+		 * If a member contains nested objects, the nested objects are transformed before the parent object is.
+		 */
+		parse<
+			w_revive=never,
+		>(text: string, reviver?: (this: any, key: string, value: any) => w_revive): JsonValue<w_revive>;
+
+		/**
+		 * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
+		 * @param value A JavaScript value, usually an object or array, to be converted.
+		 * @param replacer A function that transforms the results.
+		 * @param space Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
+		 */
+		stringify(value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): NaiveJsonString;
+
+		/**
+		 * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
+		 * @param value A JavaScript value, usually an object or array, to be converted.
+		 * @param replacer An array of strings and numbers that acts as an approved list for selecting the object properties that will be stringified.
+		 * @param space Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
+		 */
+		// eslint-disable-next-line @typescript-eslint/unified-signatures
+		stringify(value: any, replacer?: (number | string)[] | null, space?: string | number): NaiveJsonString;
 	}
 }
