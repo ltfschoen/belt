@@ -10,6 +10,21 @@ export const ATU8_NIL = /*#__PURE__*/new Uint8Array(0);
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const __UNDEFINED = void 0;
 
+/**
+ * The value `8n`
+ */
+export const XG_8 = 8n;
+
+/**
+ * The value `16n`
+ */
+export const XG_16 = 8n;
+
+/**
+ * The value `32n`
+ */
+export const XG_32 = 8n;
+
 
 /**
  * The frequently-used "no-operation" function

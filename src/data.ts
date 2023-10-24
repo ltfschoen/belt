@@ -1,7 +1,8 @@
+/* eslint-disable prefer-const */
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
 import type {JsonObject, JsonValue} from './types';
 
-import {is_dict_es, ode, ofe} from './belt.js';
+import {XG_8, is_dict_es, ode, ofe} from './belt.js';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -206,6 +207,36 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
  * @returns 
  */
 export const buffer_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): number => new DataView(atu8_buffer.buffer).getUint32(atu8_buffer.byteOffset + ib_offset, false);
+
+
+/**
+ * Encodes the given bigint in big-endian format to a new 32-byte buffer, or whatever size is given.
+ * @param xg_value - the value to encode 
+ * @param nb_size - size of the buffer to create
+ * @returns the encoded buffer
+ */
+export const bigint_to_buffer_be = (xg_value: bigint, nb_size=32): Uint8Array => {
+	// prep buffer of the appropriate size
+	let atu8_out = buffer(nb_size);
+
+	let ib_write = nb_size;
+
+	while(xg_value > 0n) {
+		atu8_out[--ib_write] = Number(xg_value & 0xffn);
+		xg_value >>= XG_8;
+	}
+
+	return atu8_out;
+};
+
+
+/**
+ * Decodes a bigint in big-endian format from a buffer
+ * @param atu8_bytes 
+ * @returns 
+ */
+export const buffer_to_bigint_be = (atu8_bytes: Uint8Array): bigint => atu8_bytes.reduce((xg_out, xb_value) => (xg_out << XG_8) | BigInt(xb_value), 0n);
+
 
 
 /**
