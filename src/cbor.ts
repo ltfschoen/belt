@@ -29,7 +29,7 @@ export type CborValue = CborPrimitive | CborArray | CborMap;
  * @param ib_read 
  * @returns a tuple of the decoded value and number of bytes read: `[z_value:`{@link CborValue `CborValue`}`, nb_read: number]`
  */
-export const decode_cbor_trivial = <
+export const cbor_decode_trivial = <
 	w_expected extends CborValue,
 >(atu8_data: Uint8Array, ib_read=0): [
 	w_item: w_expected,
@@ -70,7 +70,7 @@ export const decode_cbor_trivial = <
 		// array
 		(a_items: CborValue[]=[]) => {
 			for(let i_item=0; i_item<xn_value; i_item++) {
-				[a_items[i_item], ib_read] = decode_cbor_trivial(atu8_data, ib_read);
+				[a_items[i_item], ib_read] = cbor_decode_trivial(atu8_data, ib_read);
 			}
 
 			return a_items;
@@ -79,8 +79,8 @@ export const decode_cbor_trivial = <
 		// map
 		(hm_out=new Map<CborValue, CborValue>()) => {
 			for(let i_item=0, z_key, z_value; i_item<xn_value; i_item++) {
-				[z_key, ib_read] = decode_cbor_trivial(atu8_data, ib_read);
-				[z_value, ib_read] = decode_cbor_trivial(atu8_data, ib_read);
+				[z_key, ib_read] = cbor_decode_trivial(atu8_data, ib_read);
+				[z_value, ib_read] = cbor_decode_trivial(atu8_data, ib_read);
 
 				// save entry to map
 				hm_out.set(z_key, z_value);
@@ -95,7 +95,7 @@ export const decode_cbor_trivial = <
 			(_?: any) => buffer_to_text(f_bytes()),
 
 			// epoch-based date/time as number of seconds (integer or float)
-			(xn_timestamp=0) => ([xn_timestamp, ib_read] = decode_cbor_trivial<number>(atu8_data, ib_read), xn_timestamp),
+			(xn_timestamp=0) => ([xn_timestamp, ib_read] = cbor_decode_trivial<number>(atu8_data, ib_read), xn_timestamp),
 
 			// unsigned bigint
 			(_?: any) => buffer_to_bigint_be(f_bytes()),

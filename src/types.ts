@@ -17,7 +17,12 @@ export type Promisable<w_value=unknown> = w_value | Promise<w_value>;
 /**
  * Shortcut for another common type pattern
  */
-export type Arrayable<w_value> = w_value | Array<w_value>;
+export type Arrayable<w_value> = w_value | w_value[];
+
+/**
+ * Shortcut for another common type pattern
+ */
+export type NestedArrayable<w_value> = w_value | (w_value | NestedArrayable<w_value>)[];
 
 /**
  * Shortcut for another common type pattern
