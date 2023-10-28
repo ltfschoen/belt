@@ -22,7 +22,7 @@ export type Arrayable<w_value> = w_value | w_value[];
 /**
  * Shortcut for another common type pattern
  */
-export type NestedArrayable<w_value> = w_value | (w_value | NestedArrayable<w_value>)[];
+export type NestedArrayable<w_value> = w_value | NestedArrayable<w_value>[];
 
 /**
  * Shortcut for another common type pattern
