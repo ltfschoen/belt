@@ -1,7 +1,5 @@
 import type {A} from 'ts-toolbelt';
 
-import type {NaiveJsonString} from './strings';
-
 
 /**
  * Shortcut for a very common type pattern
@@ -33,6 +31,13 @@ export type Nilable<w_value> = w_value | null | undefined;
  * Shortcut for another common type pattern
  */
 export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
+
+
+
+/**
+ * JSON string
+ */
+export type NaiveJsonString = A.Type<string, 'json'>;
 
 
 

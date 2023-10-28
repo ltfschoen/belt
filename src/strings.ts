@@ -26,12 +26,6 @@ export type NaiveBase93 = A.Type<string, 'base93'>;
 export type NaiveBase222 = A.Type<string, 'base222'>;
 
 
-/**
- * JSON string
- */
-export type NaiveJsonString = A.Type<string, 'json'>;
-
-
 interface HexMethods {
 	toLowerCase(): NaiveHexLower;
 	toUpperCase(): NaiveHexUpper;
