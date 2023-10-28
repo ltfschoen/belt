@@ -272,7 +272,7 @@ export const canonicalize_json = <
  * @returns 
  */
 export const safe_json = <
-	w_out extends JsonValue<undefined>=JsonValue,
+	w_out extends JsonValue<void | undefined>=JsonValue,
 // @ts-expect-error no explicit return
 >(sx_json: string): w_out | undefined => {
 	try {
