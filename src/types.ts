@@ -37,7 +37,9 @@ export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
 /**
  * JSON string
  */
-export type NaiveJsonString = A.Type<string, 'json'>;
+export type NaiveJsonString<
+	s_subtype extends string=string,
+> = A.Type<s_subtype, 'json'>;
 
 
 
@@ -116,7 +118,9 @@ declare global {
 		 * @param replacer A function that transforms the results.
 		 * @param space Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
 		 */
-		stringify(value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): NaiveJsonString;
+		stringify<
+			s_subtype extends string,
+		>(value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): NaiveJsonString<s_subtype>;
 
 		/**
 		 * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
@@ -125,6 +129,8 @@ declare global {
 		 * @param space Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
 		 */
 		// eslint-disable-next-line @typescript-eslint/unified-signatures
-		stringify(value: any, replacer?: (number | string)[] | null, space?: string | number): NaiveJsonString;
+		stringify<
+			s_subtype extends string,
+		>(value: any, replacer?: (number | string)[] | null, space?: string | number): NaiveJsonString<s_subtype>;
 	}
 }
