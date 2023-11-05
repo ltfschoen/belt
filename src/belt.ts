@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type {Dict, JsonObject} from './types';
 
 /**
@@ -75,7 +76,7 @@ export const is_dict_es = (z: unknown): z is JsonObject => Object === z?.constru
 /**
  * Fold array into an object
  */
-export const fold = <w_out, w_value>(a_in: w_value[], f_fold: (z_value: w_value, i_each: number) => Dict<w_out>): Dict<w_out> => {
+export const fold = <w_out, w_value>(a_in: Iterable<w_value>, f_fold: (z_value: w_value, i_each: number) => Dict<w_out>): Dict<w_out> => {
 	const h_out = {};
 	let i_each = 0;
 	for(const z_each of a_in) {
