@@ -336,19 +336,127 @@ export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.lengt
 
 
 /**
+ * Converts the given buffer to a base64-encoded string using minimal code but at the expense of performance.
+ * @param atu8_buffer input buffer
+ * @returns output base64-encoded string
+ */
+export const buffer_to_base64_slim = (atu8_buffer: Uint8Array): NaiveBase64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as NaiveBase64;
+
+
+/**
+ * Converts the given base64-encoded string to a buffer using minimal code but at the expense of performance.
+ * @param sx_buffer input base64-encoded string
+ * @returns output buffer
+ */
+export const base64_to_buffer_slim = (sx_buffer: string): Uint8Array => buffer(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
+
+
+const SX_CHARS_BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+// adapted from <https://gist.github.com/jonleighton/958841>
+/* eslint-disable no-multi-spaces */
+/**
  * Converts the given buffer to a base64-encoded string.
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as NaiveBase64;
+function buffer_to_base64(atu8_buffer: Uint8Array): NaiveBase64 {
+	let s_out = '';
+	const nb_buffer = atu8_buffer.byteLength;
+	const nb_remainder = nb_buffer % 3;
+	const nb_main = nb_buffer - nb_remainder;
+
+	let xb_a = 0;
+	let xb_b = 0;
+	let xb_c = 0;
+	let xb_d = 0;
+	let xn_chunk = 0;
+
+	// Main loop deals with bytes in chunks of 3
+	for(let ib_offset=0; ib_offset<nb_main; ib_offset+=3) {
+		// Combine the three bytes into a single integer
+		xn_chunk = (atu8_buffer[ib_offset] << 16) | (atu8_buffer[ib_offset + 1] << 8) | atu8_buffer[ib_offset + 2];
+
+		// Use bitmasks to extract 6-bit segments from the triplet
+		xb_a = (xn_chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
+		xb_b = (xn_chunk & 258048)   >> 12; // 258048   = (2^6 - 1) << 12
+		xb_c = (xn_chunk & 4032)     >>  6; // 4032     = (2^6 - 1) << 6
+		xb_d = xn_chunk & 63;               // 63       = 2^6 - 1
+
+		// Convert the raw binary segments to the appropriate ASCII encoding
+		s_out += SX_CHARS_BASE64[xb_a] + SX_CHARS_BASE64[xb_b] + SX_CHARS_BASE64[xb_c] + SX_CHARS_BASE64[xb_d];
+	}
+
+	// Deal with the remaining bytes and padding
+	if(1 === nb_remainder) {
+		xn_chunk = atu8_buffer[nb_main];
+
+		xb_a = (xn_chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
+
+		// Set the 4 least significant bits to zero
+		xb_b = (xn_chunk & 3) << 4; // 3   = 2^2 - 1
+
+		s_out += SX_CHARS_BASE64[xb_a] + SX_CHARS_BASE64[xb_b] + '==';
+	}
+	else if(2 === nb_remainder) {
+		xn_chunk = (atu8_buffer[nb_main] << 8) | atu8_buffer[nb_main + 1];
+
+		xb_a = (xn_chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
+		xb_b = (xn_chunk & 1008)  >> 4;  // 1008  = (2^6 - 1) << 4
+
+		// Set the 2 least significant bits to zero
+		xb_c = (xn_chunk & 15) << 2; // 15    = 2^4 - 1
+
+		s_out += SX_CHARS_BASE64[xb_a] + SX_CHARS_BASE64[xb_b] + SX_CHARS_BASE64[xb_c] + '=';
+	}
+
+	return s_out as NaiveBase64;
+}
+/* eslint-enable */
 
 
 /**
  * Converts the given base64-encoded string to a buffer.
- * @param sx_buffer input base64-encoded string
+ * @param sb64_data input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_buffer = (sx_buffer: string): Uint8Array => buffer(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
+export const base64_to_buffer = (sb64_data: string): Uint8Array => {
+	const nl_padding = sb64_data.match(/=$/g)?.length || 0;
+	sb64_data = sb64_data.replace(/=/g, '');
+
+	let xb_work = 0;
+	let nb_buffer = 0;
+
+	const a_out: number[] = [];
+
+	for(const s_char of sb64_data) {
+		const xb_char = SX_CHARS_BASE64.indexOf(s_char);
+
+		if(-1 === xb_char) throw new Error('Invalid base64 string');
+
+		// add 6 bits from index to buffer
+		xb_work = (xb_work << 6) | xb_char;
+		nb_buffer += 6;
+
+		do {
+			if(nb_buffer >= 8) {
+				a_out.push(xb_work >>> (nb_buffer - 8));
+				nb_buffer -= 8;
+			}
+		} while(nb_buffer >= 8);
+	}
+
+	// Adjust for padding by removing bits added
+	nb_buffer -= nl_padding * 2;
+
+	// Convert remaining bits in the buffer to bytes (if any)
+	while(nb_buffer >= 8) {
+		a_out.push(xb_work >>> (nb_buffer - 8));
+		nb_buffer -= 8;
+	}
+
+	return new Uint8Array(a_out);
+};
 
 
 /**
@@ -417,21 +525,20 @@ export const buffer_to_base93 = (atu8_buffer: Uint8Array): NaiveBase93 => {
 
 /**
  * Converts the given base93-encoded string to a buffer.
- * @param sx_buffer input base93-encoded string
+ * @param sb93_data input base93-encoded string
  * @returns output buffer
  */
-export const base93_to_buffer = (sx_buffer: string): Uint8Array => {
-	const nl_buffer = sx_buffer.length;
+export const base93_to_buffer = (sb93_data: string): Uint8Array => {
 	const a_out: number[] = [];
 
 	let xb_decode = 0;
 	let ni_shift = 0;
 	let xb_work = -1;
 
-	for(let i_each=0; i_each<nl_buffer; i_each++) {
-		const xb_char = SX_CHARS_BASE93.indexOf(sx_buffer[i_each]);
+	for(const s_char of sb93_data) {
+		const xb_char = SX_CHARS_BASE93.indexOf(s_char);
 
-		if(-1 === xb_char) throw new Error(`Invalid base93 string`);
+		if(-1 === xb_char) throw new Error('Invalid base93 string');
 
 		if(-1 === xb_work) {
 			xb_work = xb_char;
@@ -453,7 +560,7 @@ export const base93_to_buffer = (sx_buffer: string): Uint8Array => {
 
 	if(-1 !== xb_work) a_out.push(xb_decode | (xb_work << ni_shift));
 
-	return Uint8Array.from(a_out.slice(0, Math.ceil(sx_buffer.length * 7 / 8)));
+	return Uint8Array.from(a_out.slice(0, Math.ceil(sb93_data.length * 7 / 8)));
 };
 
 
