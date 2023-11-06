@@ -360,7 +360,7 @@ const SX_CHARS_BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-function buffer_to_base64(atu8_buffer: Uint8Array): NaiveBase64 {
+export const buffer_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
 	let s_out = '';
 	const nb_buffer = atu8_buffer.byteLength;
 	const nb_remainder = nb_buffer % 3;
@@ -411,7 +411,7 @@ function buffer_to_base64(atu8_buffer: Uint8Array): NaiveBase64 {
 	}
 
 	return s_out as NaiveBase64;
-}
+};
 /* eslint-enable */
 
 
