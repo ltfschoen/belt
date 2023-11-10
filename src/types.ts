@@ -1,5 +1,22 @@
 import type {A} from 'ts-toolbelt';
 
+export declare const TYPE_ID: unique symbol;
+export declare const ES_TYPE: unique symbol;
+
+/**
+ * Create subtype on any type using intersection. Can be removed later using {@link Unsubtype}
+ */
+export type Subtype<w_type, w_id> = {
+	[TYPE_ID]: w_id;
+	[ES_TYPE]: w_type;
+} & w_type;
+
+/**
+ * Removes subtype
+ */
+export type Unsubtype<w_type> = w_type extends {[ES_TYPE]: infer w_actual}? w_actual: never;
+
+
 
 /**
  * Shortcut for a very common type pattern
@@ -39,7 +56,7 @@ export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
  */
 export type NaiveJsonString<
 	s_subtype extends string=string,
-> = A.Type<s_subtype, 'json'>;
+> = Subtype<s_subtype, 'json'>;
 
 
 
