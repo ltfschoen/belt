@@ -6,10 +6,10 @@ export declare const ES_TYPE: unique symbol;
 /**
  * Create subtype on any type using intersection. Can be removed later using {@link Unsubtype}
  */
-export type Subtype<w_type, w_id, h_annotations extends object={}> = O.Merge<{
+export type Subtype<w_type, w_id> = {
 	[TYPE_ID]: w_id;
 	[ES_TYPE]: w_type;
-}, h_annotations> & w_type;
+} & w_type;
 
 /**
  * Removes subtype
