@@ -1,4 +1,4 @@
-import type {A, O} from 'ts-toolbelt';
+import type {A, O, U} from 'ts-toolbelt';
 
 export declare const TYPE_ID: unique symbol;
 export declare const ES_TYPE: unique symbol;
@@ -15,6 +15,48 @@ export type Subtype<w_type, w_id> = {
  * Removes subtype
  */
 export type Unsubtype<w_type> = w_type extends {[ES_TYPE]: infer w_actual}? w_actual: never;
+
+
+type UnionKeys<h_types> = h_types extends any? keyof U.IntersectOf<h_types>: never;
+
+/**
+ * Takes a union of objects and makes it so that each object includes keys from the other
+ * objects in the union, giving them optional types of `undefined` so that they can be
+ * used in discriminated union tests.
+ */
+export type DiscriminatedUnion<h_types, h_clone=h_types> = h_types extends any
+	? UnionKeys<h_clone> extends infer as_keys
+		? {
+			[si_each in keyof h_types]: {
+				[si_key in si_each]: h_types[si_each];
+			} & {
+				[si_key in Exclude<A.Cast<as_keys, A.Key>, si_each>]?: undefined;
+			}
+		}[keyof h_types]
+		: never
+	: never;
+
+/* eslint-disable @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars */
+{
+	type sample = {
+		foo: 'foo';
+	} | {
+		bar: 'bar';
+	};
+
+	type actual = DiscriminatedUnion<sample>;
+
+	type expect = {
+		foo: 'foo';
+		bar: undefined;
+	} | {
+		foo: undefined;
+		bar: 'bar';
+	};
+
+	const test: expect = {} as actual;
+}
+/* eslint-enable */
 
 
 
