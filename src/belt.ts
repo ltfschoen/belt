@@ -303,11 +303,11 @@ export const fodemtv = <
 	w_value extends any,
 >(
 	h_thing: Record<si_key, w_value>,
-	f_transform: (w_value: w_value, si_key?: si_key) => w_out
+	f_transform: (w_value: w_value, si_key: si_key, i_entry: number) => w_out
 ): {
 	[si_key_out in keyof typeof h_thing]: w_out;
 } => ofe(
-	odem(h_thing, ([si_key, w_value]) => [si_key, f_transform(w_value, si_key)])
+	odem(h_thing, ([si_key, w_value], i_entry) => [si_key, f_transform(w_value, si_key, i_entry)])
 ) as {
 	[si_key_out in keyof typeof h_thing]: w_out;
 };
