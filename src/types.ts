@@ -192,4 +192,12 @@ declare global {
 			s_subtype extends string,
 		>(value: any, replacer?: (number | string)[] | null, space?: string | number): NaiveJsonString<s_subtype>;
 	}
+
+	// interface ObjectConstructor {
+	// 	/**
+	// 	 * Returns the names of the enumerable string properties and methods of an object.
+	// 	 * @param o Object that contains the properties and methods. This can be an object that you created or an existing Document Object Model (DOM) object.
+	// 	 */
+	// 	keys<z_obj extends {}>(o: z_obj): z_obj extends Record<infer as_keys, any>? as_keys[]: string[];
+	// }
 }

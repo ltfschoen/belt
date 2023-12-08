@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type {Dict, JsonObject} from './types';
 
+import {ok} from 'assert';
+
 /**
  * Utility nil buffer constant
  */
@@ -184,6 +186,15 @@ export const oda: <
 	h_object extends {},
 	h_extend extends {},
 >(h_object: h_object, h_extend: h_extend) => h_object & h_extend = Object.assign;
+
+
+/**
+ * Typed alias to `Object.keys`
+ */
+export const odk: <
+	si_key extends string,
+	w_value extends any,
+>(h_object: Record<si_key, w_value>) => si_key[] = Object.keys;
 
 
 /**
