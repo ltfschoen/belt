@@ -1,7 +1,7 @@
 import type {A, O, U} from 'ts-toolbelt';
 
-export declare const TYPE_ID: unique symbol;
-export declare const ES_TYPE: unique symbol;
+export const TYPE_ID = Symbol('type-id');
+export const ES_TYPE = Symbol('es-type');
 
 /**
  * Create subtype on any type using intersection. Can be removed later using {@link Unsubtype}
