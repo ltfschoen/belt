@@ -2,7 +2,7 @@
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
 import type {JsonObject, JsonValue} from './types';
 
-import {XG_8, is_dict_es, ode, ofe} from './belt.js';
+import {XG_8, is_array, is_dict_es, ode, ofe} from './belt.js';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -258,7 +258,7 @@ export const canonicalize_json = <
 
 		w_json = h_sorted as w_json;
 	}
-	else if(Array.isArray(w_json)) {
+	else if(is_array(w_json)) {
 		w_json = w_json.map(w_item => canonicalize_json(w_item)) as w_json;
 	}
 

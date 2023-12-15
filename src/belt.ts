@@ -65,9 +65,19 @@ export const pascal = (s_ident: string): string => (s_ident.toUpperCase() === s_
 
 
 /**
+ * Simple test for whether a value is a Uint8Array or not
+ */
+export const is_bytes = (z: unknown): z is Uint8Array => z instanceof Uint8Array;
+
+/**
+ * Simple test for whether a value is an array or not
+ */
+export const is_array = <w_type=unknown>(z: unknown): z is Array<w_type> => Array.isArray(z);
+
+/**
  * Simple test for whether a deserialized JSON value is a plain object (dict) or not
  */
-export const is_dict = (z: unknown): z is JsonObject => z? 'object' === typeof z && !Array.isArray(z): false;
+export const is_dict = (z: unknown): z is JsonObject => z? 'object' === typeof z && !is_array(z): false;
 
 /**
  * Strict test for whether an ES object is a plain object (dict) or not
