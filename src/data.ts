@@ -33,7 +33,7 @@ type Uint8ArrayConstructorParams =
  * @param a_args 
  * @returns 
  */
-export const buffer = (...a_args: Uint8ArrayConstructorParams): Uint8Array => new Uint8Array(...a_args as [number]);
+export const bytes = (...a_args: Uint8ArrayConstructorParams): Uint8Array => new Uint8Array(...a_args as [number]);
 
 
 /**
@@ -49,7 +49,7 @@ export const dataview = (...a_args: [buffer: ArrayBufferLike, byteOffset?: numbe
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffer(await crypto.subtle.digest('SHA-256', atu8_data));
+export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-256', atu8_data));
 
 
 /**
@@ -70,7 +70,7 @@ export const sha256d = async(atu8_data: Uint8Array): Promise<Uint8Array> => {
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffer(await crypto.subtle.digest('SHA-384', atu8_data));
+export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-384', atu8_data));
 
 
 /**
@@ -78,7 +78,7 @@ export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffe
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => buffer(await crypto.subtle.digest('SHA-512', atu8_data));
+export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-512', atu8_data));
 
 
 /**
@@ -95,7 +95,7 @@ export const hmac = async(atu8_sk: Uint8Array, atu8_message: Uint8Array, si_algo
 	}, false, ['sign']);
 
 	// construct hmac signature
-	return buffer(await crypto.subtle.sign('HMAC', dk_sign, atu8_message));
+	return bytes(await crypto.subtle.sign('HMAC', dk_sign, atu8_message));
 };
 
 
@@ -115,7 +115,7 @@ export const zero_out = (atu8_data: number[] | Uint8Array | Uint16Array): void =
 export const encode_length_prefix_u16 = (atu8_data: Uint8Array): Uint8Array => {
 	// prep buffer to serialize encoded extension
 	const atu8_encoded = concat([
-		buffer(2),  // 2 bytes for length prefix
+		bytes(2),  // 2 bytes for length prefix
 		atu8_data,
 	]);
 
@@ -141,7 +141,7 @@ export const decode_length_prefix_u16 = (atu8_encoded: Uint8Array): [Uint8Array,
  * @param s_text text to encode
  * @returns UTF-8 encoded Uint8Array
  */
-export const text_to_buffer = (s_text: string): Uint8Array => new TextEncoder().encode(s_text);
+export const text_to_bytes = (s_text: string): Uint8Array => new TextEncoder().encode(s_text);
 
 
 /**
@@ -149,7 +149,7 @@ export const text_to_buffer = (s_text: string): Uint8Array => new TextEncoder().
  * @param atu8_text UTF-8 encoded data to decode
  * @returns text
  */
-export const buffer_to_text = (atu8_text: Uint8Array): string => new TextDecoder().decode(atu8_text);
+export const bytes_to_text = (atu8_text: Uint8Array): string => new TextDecoder().decode(atu8_text);
 
 
 /**
@@ -157,7 +157,7 @@ export const buffer_to_text = (atu8_text: Uint8Array): string => new TextDecoder
  * @param sx_buffer input base64-encoded string
  * @returns text
  */
-export const base64_to_text = (sx_buffer: string): string => buffer_to_text(base64_to_buffer(sx_buffer));
+export const base64_to_text = (sx_buffer: string): string => bytes_to_text(base64_to_bytes(sx_buffer));
 
 
 /**
@@ -165,7 +165,7 @@ export const base64_to_text = (sx_buffer: string): string => buffer_to_text(base
  * @param s_text text to encode
  * @returns output base64-encoded string
  */
-export const text_to_base64 = (s_text: string): NaiveBase64 => buffer_to_base64(text_to_buffer(s_text));
+export const text_to_base64 = (s_text: string): NaiveBase64 => bytes_to_base64(text_to_bytes(s_text));
 
 
 /**
@@ -173,7 +173,7 @@ export const text_to_base64 = (s_text: string): NaiveBase64 => buffer_to_base64(
  * @param w_json JSON-compatible value to encode
  * @returns UTF-8 encoded Uint8Array
  */
-export const json_to_buffer = (w_json: JsonValue): Uint8Array => text_to_buffer(JSON.stringify(w_json));
+export const json_to_bytes = (w_json: JsonValue): Uint8Array => text_to_bytes(JSON.stringify(w_json));
 
 
 /**
@@ -181,7 +181,7 @@ export const json_to_buffer = (w_json: JsonValue): Uint8Array => text_to_buffer(
  * @param atu8_json UTF-8 encoded JSON string data
  * @returns parsed JSON value
  */
-export const buffer_to_json = (atu8_json: Uint8Array): JsonValue => JSON.parse(buffer_to_text(atu8_json));
+export const bytes_to_json = (atu8_json: Uint8Array): JsonValue => JSON.parse(bytes_to_text(atu8_json));
 
 
 /**
@@ -189,7 +189,7 @@ export const buffer_to_json = (atu8_json: Uint8Array): JsonValue => JSON.parse(b
  * @param xg_uint 
  * @returns 
  */
-export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
+export const uint32_to_bytes_be = (xg_uint: number | bigint): Uint8Array => {
 	// prep array buffer
 	const ab_buffer = new Uint32Array(1).buffer;
 
@@ -197,7 +197,7 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
 	new DataView(ab_buffer).setUint32(0, Number(xg_uint), false);
 
 	// wrap as uint8array
-	return buffer(ab_buffer);
+	return bytes(ab_buffer);
 };
 
 
@@ -206,7 +206,7 @@ export const uint32_to_buffer_be = (xg_uint: number | bigint): Uint8Array => {
  * @param n_uint 
  * @returns 
  */
-export const buffer_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): number => new DataView(atu8_buffer.buffer).getUint32(atu8_buffer.byteOffset + ib_offset, false);
+export const bytes_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): number => new DataView(atu8_buffer.buffer).getUint32(atu8_buffer.byteOffset + ib_offset, false);
 
 
 /**
@@ -215,9 +215,9 @@ export const buffer_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): numbe
  * @param nb_size - size of the buffer to create
  * @returns the encoded buffer
  */
-export const bigint_to_buffer_be = (xg_value: bigint, nb_size=32): Uint8Array => {
+export const bigint_to_bytes_be = (xg_value: bigint, nb_size=32): Uint8Array => {
 	// prep buffer of the appropriate size
-	let atu8_out = buffer(nb_size);
+	let atu8_out = bytes(nb_size);
 
 	let ib_write = nb_size;
 
@@ -235,7 +235,7 @@ export const bigint_to_buffer_be = (xg_value: bigint, nb_size=32): Uint8Array =>
  * @param atu8_bytes 
  * @returns 
  */
-export const buffer_to_bigint_be = (atu8_bytes: Uint8Array): bigint => atu8_bytes.reduce((xg_out, xb_value) => (xg_out << XG_8) | BigInt(xb_value), 0n);
+export const bytes_to_bigint_be = (atu8_bytes: Uint8Array): bigint => atu8_bytes.reduce((xg_out, xb_value) => (xg_out << XG_8) | BigInt(xb_value), 0n);
 
 
 
@@ -289,7 +289,7 @@ export const safe_json = <
  */
 export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
 	const nb_out = a_buffers.reduce((c_bytes, atu8_each) => c_bytes + atu8_each.byteLength, 0);
-	const atu8_out = buffer(nb_out);
+	const atu8_out = bytes(nb_out);
 	let ib_write = 0;
 	for(const atu8_each of a_buffers) {
 		atu8_out.set(atu8_each, ib_write);
@@ -307,7 +307,7 @@ export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
  * @returns the concatenated output Uint8Array
  */
 export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array): Uint8Array => {
-	const atu8_out = buffer(atu8_a.length + atu8_b.length);
+	const atu8_out = bytes(atu8_a.length + atu8_b.length);
 	atu8_out.set(atu8_a);
 	atu8_out.set(atu8_b, atu8_a.length);
 	return atu8_out;
@@ -323,7 +323,7 @@ export const concat2 = (atu8_a: Uint8Array, atu8_b: Uint8Array): Uint8Array => {
  * @param atu8_buffer input buffer
  * @returns output hex string
  */
-export const buffer_to_hex = (atu8_buffer: Uint8Array): NaiveHexLower => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '') as NaiveHexLower;
+export const bytes_to_hex = (atu8_buffer: Uint8Array): NaiveHexLower => atu8_buffer.reduce((s_out, xb_byte) => s_out+xb_byte.toString(16).padStart(2, '0'), '') as NaiveHexLower;
 
 
 /**
@@ -331,7 +331,7 @@ export const buffer_to_hex = (atu8_buffer: Uint8Array): NaiveHexLower => atu8_bu
  * @param sx_hex input hex string
  * @returns output buffer
  */
-export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.length / 2)
+export const hex_to_bytes = (sx_hex: string): Uint8Array => bytes(sx_hex.length / 2)
 	.map((xb_ignore, i_char) => parseInt(sx_hex.slice(i_char * 2, (i_char * 2) + 2), 16));
 
 
@@ -340,7 +340,7 @@ export const hex_to_buffer = (sx_hex: string): Uint8Array => buffer(sx_hex.lengt
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64_slim = (atu8_buffer: Uint8Array): NaiveBase64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as NaiveBase64;
+export const bytes_to_base64_slim = (atu8_buffer: Uint8Array): NaiveBase64 => btoa(Array.from(atu8_buffer).map(xb => String.fromCharCode(xb)).join('')) as NaiveBase64;
 
 
 /**
@@ -348,7 +348,7 @@ export const buffer_to_base64_slim = (atu8_buffer: Uint8Array): NaiveBase64 => b
  * @param sx_buffer input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_buffer_slim = (sx_buffer: string): Uint8Array => buffer(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
+export const base64_to_bytes_slim = (sx_buffer: string): Uint8Array => bytes(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
 
 
 const SX_CHARS_BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -360,7 +360,7 @@ const SX_CHARS_BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  * @param atu8_buffer input buffer
  * @returns output base64-encoded string
  */
-export const buffer_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
+export const bytes_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
 	let s_out = '';
 	const nb_buffer = atu8_buffer.byteLength;
 	const nb_remainder = nb_buffer % 3;
@@ -420,7 +420,7 @@ export const buffer_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
  * @param sb64_data input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_buffer = (sb64_data: string): Uint8Array => {
+export const base64_to_bytes = (sb64_data: string): Uint8Array => {
 	const nl_padding = sb64_data.match(/=$/g)?.length || 0;
 	sb64_data = sb64_data.replace(/=/g, '');
 
@@ -464,9 +464,9 @@ export const base64_to_buffer = (sb64_data: string): Uint8Array => {
  * @param sx_buffer input string
  * @returns output buffer
  */
-export const string8_to_buffer = (sx_buffer: string): Uint8Array => {
+export const string8_to_bytes = (sx_buffer: string): Uint8Array => {
 	const nl_pairs = sx_buffer.length;
-	const atu8_buffer = buffer(nl_pairs);
+	const atu8_buffer = bytes(nl_pairs);
 	for(let i_read=0; i_read<nl_pairs; i_read++) {
 		atu8_buffer[i_read] = sx_buffer.charCodeAt(i_read);
 	}
@@ -484,7 +484,7 @@ const SX_CHARS_BASE93 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012
  * @param atu8_buffer input buffer
  * @returns output base93-encoded string
  */
-export const buffer_to_base93 = (atu8_buffer: Uint8Array): NaiveBase93 => {
+export const bytes_to_base93 = (atu8_buffer: Uint8Array): NaiveBase93 => {
 	let s_out = '';
 	const nb_buffer = atu8_buffer.byteLength;
 
@@ -528,7 +528,7 @@ export const buffer_to_base93 = (atu8_buffer: Uint8Array): NaiveBase93 => {
  * @param sb93_data input base93-encoded string
  * @returns output buffer
  */
-export const base93_to_buffer = (sb93_data: string): Uint8Array => {
+export const base93_to_bytes = (sb93_data: string): Uint8Array => {
 	const a_out: number[] = [];
 
 	let xb_decode = 0;
@@ -579,7 +579,7 @@ const A_CHARS_BASE58 = /*#__PURE__*/(() => {
 	return a_out;
 })();
 
-export const buffer_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
+export const bytes_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
 	const a_out: number[] = [];
 
 	for(const xb_char of atu8_buffer) {
@@ -610,7 +610,7 @@ export const buffer_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
 	return String.fromCharCode(...a_out) as NaiveBase58;
 };
 
-export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
+export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
 	if(!sb58_buffer || 'string' !== typeof sb58_buffer) {
 		throw new Error(`Expected base58 string but got “${sb58_buffer}”`);
 	}
@@ -624,8 +624,8 @@ export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
 	const nl_psz = m_lz ? m_lz[0].length : 0;
 	const nb_out = (((sb58_buffer.length - nl_psz) * (Math.log(58) / Math.log(256))) + 1) >>> 0;
 
-	return buffer([
-		...buffer(nl_psz),
+	return bytes([
+		...bytes(nl_psz),
 		...sb58_buffer
 			.match(/.{1}/gmu)!
 			.map(sxb58 => SX_CHARS_BASE58.indexOf(sxb58))
@@ -633,7 +633,7 @@ export const base58_to_buffer = (sb58_buffer: string): Uint8Array => {
 				const xb_tmp = (xb_char * 58) + ib_pos;
 				ib_pos = xb_tmp >> 8;
 				return xb_tmp;
-			}), buffer(nb_out))
+			}), bytes(nb_out))
 			.reverse()
 			.filter((b_last => xb_each => (b_last = b_last || !!xb_each))(false)),
 	]);
