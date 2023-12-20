@@ -557,3 +557,12 @@ export const remove = <w_item>(a_items: w_item[], w_item: w_item): w_item[] => {
 	if(i_item >= 0) a_items.splice(i_item, 1);
 	return a_items;
 };
+
+/**
+ * Throws an error, accepting an optional piece of data to attach to the object
+ * @param s_msg 
+ * @param w_data 
+ */
+export const die = (s_msg: string, w_data?: unknown): never => {
+	throw oda(Error(s_msg), {data:w_data});
+};
