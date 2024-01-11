@@ -118,60 +118,56 @@ export const interjoin = <
 	return a_output;
 };
 
-// /**
-//  * Removes duplicates from an array, keeping only the first occurrence.
-//  * @param z_identify - if specified and a string, identifies the key of each item to use as an identifier
-//  * if specified and a function, used as a callback to produce the comparison key
-//  * if omitted, compares items using full equality `===`
-//  */
-// export const deduplicate = <
-// 	z_item extends any,
-// 	s_key extends keyof z_item=keyof z_item,
-// >(a_items: z_item[], z_identify?: s_key | ((z_item: z_item) => any)): typeof a_items => {
-// 	// compare items exactly by default
-// 	let a_keys: any[] = a_items;
+/**
+ * Removes duplicates from an array, keeping only the first occurrence.
+ * @param z_identify - if specified and a string, identifies the key of each item to use as an identifier
+ * if specified and a function, used as a callback to produce the comparison key
+ * if omitted, compares items using full equality `===`
+ */
+export const deduplicate = <
+	z_item extends any,
+	s_key extends keyof z_item=keyof z_item,
+>(a_items: z_item[], z_identify?: s_key | ((z_item: z_item) => any)): typeof a_items => {
+	// compare items exactly by default
+	let a_keys: any[] = a_items;
 
-// 	// identify argument
-// 	if(z_identify) {
-// 		// use object property
-// 		if('string' === typeof z_identify) {
-// 			a_keys = a_items.map(w => w[z_identify]);
-// 		}
-// 		// use identity function
-// 		else if('function' === typeof z_identify) {
-// 			a_keys = a_items.map(z_identify);
-// 		}
-// 		else {
-// 			throw new TypeError(`Invalid identifier argument value: ${String(z_identify)}`);
-// 		}
-// 	}
+	// identify argument
+	if(z_identify) {
+		// use object property
+		if('string' === typeof z_identify) {
+			a_keys = a_items.map(w => w[z_identify]);
+		}
+		// use identity function
+		else if('function' === typeof z_identify) {
+			a_keys = a_items.map(z_identify);
+		}
+		else {
+			throw new TypeError(`Invalid identifier argument value: ${String(z_identify)}`);
+		}
+	}
 
-// 	// each item in list
-// 	for(let i_item=0, nl_items=a_items.length; i_item<nl_items; i_item++) {
-// 		const si_item = a_keys[i_item];
+	// prep keys set
+	const as_keys = new Set<any>();
 
-// 		// compare against all higher-indexed items
-// 		for(let i_test=i_item+1; i_test<nl_items; i_test++) {
-// 			// found duplicate
-// 			if(si_item === a_keys[i_test]) {
-// 				// remove duplicate
-// 				a_items.splice(i_test, 1);
-// 				a_keys.splice(i_test, 1);
+	// prep output
+	const a_unique: z_item[] = [];
 
-// 				// update length
-// 				nl_items -= 1;
+	// each item in list
+	for(let i_item=0, nl_items=a_items.length; i_item<nl_items; i_item++) {
+		const w_key = a_keys[i_item];
 
-// 				// update test index
-// 				i_test -= 1;
+		// already in set; skip
+		if(as_keys.has(w_key)) continue;
 
-// 				// repeat
-// 				continue;
-// 			}
-// 		}
-// 	}
+		// add to keys set
+		as_keys.add(w_key);
 
-// 	return a_items;
-// };
+		// add to items
+		a_unique.push(a_items[i_item]);
+	}
+
+	return a_unique;
+};
 
 /**
  * Escape all special regex characters to turn a string into a verbatim match pattern
