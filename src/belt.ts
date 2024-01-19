@@ -304,10 +304,10 @@ export const oderom = <
 	si_key_out extends string,
 >(
 	h_thing: Record<si_key_in, w_value_in>,
-	f_merge: (si_key: si_key_in, w_value: w_value_in) => Record<si_key_in, w_value_out>
-): Record<si_key_out, w_value_out> => oder(h_thing, (h_out, [si_key, w_value]) => ({
+	f_merge: (si_key: si_key_in, w_value: w_value_in, i_index: number) => Record<si_key_in, w_value_out>
+): Record<si_key_out, w_value_out> => oder(h_thing, (h_out, [si_key, w_value], i_index) => ({
 	...h_out,
-	...f_merge(si_key, w_value),
+	...f_merge(si_key, w_value, i_index),
 }), {}) as Record<si_key_out, w_value_out>;
 
 
