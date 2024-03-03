@@ -1,5 +1,0 @@
-yarn run v1.22.19
-$ yarn build:mjs && yarn build:cjs
-$ tsc -p tsconfig.mjs.json
-$ tsc -p tsconfig.cjs.json
-Done in 2.25s.

@@ -4,6 +4,16 @@ export const TYPE_ID = Symbol('type-id');
 export const ES_TYPE = Symbol('es-type');
 
 /**
+ * Test whether a given type value is the `any` type. Returns `1` if true, `0` otherwise
+ */
+export type IsLiteralAny<w_test> = 0 extends (1 & w_test)? 1 : 0;
+
+/**
+ * If the given type value is the `any` type, use the given substitute type instead
+ */
+export type InsteadOfAny<w_test, w_instead> = 0 extends (1 & w_test)? w_instead : w_test;
+
+/**
  * Create subtype on any type using intersection. Can be removed later using {@link Unsubtype}
  */
 export type Subtype<w_type, w_id> = {
@@ -91,7 +101,40 @@ export type Nilable<w_value> = w_value | null | undefined;
  */
 export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
 
+/**
+ * Types that can be accessed via index operator, and that work with `Object.entries()`
+ */
+export type KeyValuable = Record<any, any> | ArrayLike<any>;
 
+/**
+ * Returns the keys of the given type, returning`${bigint}` for Array since its keys satisfy `${bigint}`
+ */
+export type KeysOf<w_type> = w_type extends ArrayLike<any>
+	? `${bigint}`
+	: w_type extends JsonObject
+		? string
+		: w_type extends Record<infer s_key, any>
+			? s_key
+			: never;
+
+/**
+ * Returns the values of the given type, extracting the values of an Array, or the properties of an Object.
+ */
+export type ValuesOf<w_type> = w_type extends ArrayLike<infer w_value>? w_value: w_type[keyof w_type];
+
+/**
+ * Union of all TypedArray types
+ */
+export type TypedArray =
+	| Int8Array
+	| Uint8Array
+	| Uint8ClampedArray
+	| Int16Array
+	| Uint16Array
+	| Int32Array
+	| Uint32Array
+	| Float32Array
+	| Float64Array;
 
 /**
  * JSON string
@@ -105,9 +148,9 @@ export type NaiveJsonString<
 /**
  * Root type for all objects considered to be parsed JSON objects
  */
-export interface JsonObject<w_inject extends any=never> {  // eslint-disable-line
+export type JsonObject<w_inject extends any=never> = {  // eslint-disable-line
 	[k: string]: JsonValue<w_inject>;
-}
+};
 
 /**
  * Union of "valuable", primitive JSON value types

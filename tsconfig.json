@@ -6,11 +6,14 @@
 		"outDir": "dist/min",
 
 		"declaration": true,
-		"declarationDir": "dist/min"
+		"declarationDir": "dist/min",
+
+		"types": ["bun-types"],
 	},
 
 	"include": [
 		"src/**/*.ts",
-		"rollup.config.ts"
+		"rollup.config.ts",
+		"test/**/*.ts",
 	]
 }

@@ -55,3 +55,50 @@ export type NaiveHexUpper<s_subtype extends string=string> = Subtype<HexUpperMet
  * Hexadecimal-encoded bytes in mixed case
  */
 export type NaiveHexMixed<s_subtype extends string=string> = Subtype<HexMethods & s_subtype, 'hex-lower' | 'hex-upper'>;
+
+/**
+ * Creates a proper-case string, returning `undefined` if given `undefined
+ * @param s_input - any text to transform
+ * @returns the transformed text in "Proper case"
+ */
+export const proper = <
+	s_input extends string | undefined,
+	z_output = s_input extends undefined ? undefined : string,
+>(s_input: s_input): z_output => s_input?.split(/[\s_]+/g).map(s => s ? s[0].toUpperCase() + s.slice(1) : '').join(' ') as z_output;
+
+/**
+ * Converts given identifier to "snake_case", returning {@link s_ident} if given a falsy value
+ * @param s_ident - an identifier to transform
+ * @returns the transformed identifier in "snake_case"
+ */
+export const snake = <
+	s_input extends string | undefined,
+	z_output = s_input extends undefined ? undefined : string,
+>(s_ident: s_input): z_output => (s_ident
+	? s_ident.toUpperCase() === s_ident
+		// depending on upper or mixed case
+		? s_ident.toLowerCase().replace(/[^a-z0-9$]+/g, '_')
+		: s_ident.replace(/(?<!^)(?:[^a-zA-Z0-9$]*([A-Z])|[^a-zA-Z0-9$]+)/g, (s_ignore, s_cap) => '_' + (s_cap || '')).toLowerCase()
+	: s_ident) as z_output;
+
+/**
+ * Converts given identifier to "PascalCase", returning {@link s_ident} if given a falsy value
+ * @param s_ident - an identifier to transform
+ * @returns the transformed identifier in "PascalCase"
+ */
+export const pascal = <
+	s_input extends string | undefined,
+	z_output = s_input extends undefined ? undefined : string,
+>(s_ident: s_input): z_output => (s_ident
+	// if all uppercase; make lower
+	? (/^([^A-Za-z]*[A-Z]+)+([^A-Za-z])?$/.test(s_ident) ? pascal(s_ident.toLowerCase()) : s_ident)
+		// convert to pascal
+		.replace(/(?:^|[^A-Za-z0-9$])([\w0-9$]|$)/g, (s_ignore, s_letter) => s_letter.toUpperCase()).trim()
+	: s_ident) as z_output;
+
+/**
+ * Escape all special regex characters to turn a string into a verbatim match pattern
+ * @param s_input input string
+ * @returns escaped string ready for RegExp constructor
+ */
+export const escape_regex = (s_input: string): string => s_input.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');

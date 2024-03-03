@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
-import type {JsonObject, JsonValue} from './types';
+import type {JsonObject, JsonValue, KeysOf} from './types';
 
-import {XG_8, is_array, is_dict_es, ode, ofe} from './belt.js';
+import {XG_8, is_array, is_dict_es, is_string, entries, from_entries} from './belt.js';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -249,7 +249,7 @@ export const canonicalize_json = <
 >(w_json: w_json): w_json => {
 	if(is_dict_es(w_json)) {
 		// sort all keys
-		const h_sorted = ofe(ode(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
+		const h_sorted: JsonObject = from_entries(entries(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
 
 		// traverse on children
 		for(const si_key in h_sorted) {
@@ -611,7 +611,7 @@ export const bytes_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
 };
 
 export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
-	if(!sb58_buffer || 'string' !== typeof sb58_buffer) {
+	if(!sb58_buffer || !is_string(sb58_buffer)) {
 		throw new Error(`Expected base58 string but got “${sb58_buffer}”`);
 	}
 
@@ -638,3 +638,20 @@ export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
 			.filter((b_last => xb_each => (b_last = b_last || !!xb_each))(false)),
 	]);
 };
+
+/**
+ * Cryptographically strong random number
+ */
+export const crypto_random = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / (2 ** 32);
+
+/**
+ * Generate a cryptographically strong random int within a given range
+ */
+export const crypto_random_int = (x_a: number, x_b = 0): number => {
+	const x_min = Math.floor(Math.min(x_a, x_b));
+	const x_max = Math.ceil(Math.max(x_a, x_b));
+
+	// confine to range
+	return Math.floor(crypto_random() * (x_max - x_min)) + x_min;
+};
+
