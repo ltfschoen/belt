@@ -34,9 +34,25 @@ export const XG_32 = 8n;
 export const F_NOOP = () => {};  // eslint-disable-line
 
 /**
- * The seldomnly-used "identity" function
+ * The "identity" function
  */
-export const F_IDENTITY =(w: any) => w;  // eslint-disable-line
+export const F_IDENTITY = <w_type>(w: w_type): w_type => w;  // eslint-disable-line
+
+/**
+ * Casts the given argument to a specific type.
+ * @param w_value - value to cast
+ * @returns the value casted to the target type
+*/
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const cast: <w_to>(w_value: any) => w_to = F_IDENTITY;
+
+/**
+ * Forces TypeScript to perform type narrowing on the given value by asserting its type
+ * @param w_value - value to narrow
+ * @returns `true` always
+*/
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const narrow = <w_to>(w_value: any): w_value is w_to => !0;
 
 
 /**
@@ -566,7 +582,7 @@ export const die = (s_msg: string, w_data?: unknown): never => {
 export const try_sync = <
 	w_return,
 	w_error,
->(f_try: () => w_return): [w_return, 0] | [undefined, InsteadOfAny<w_error, unknown>] => {
+>(f_try: (_?: void) => w_return): [w_return, 0] | [undefined, InsteadOfAny<w_error, unknown>] => {
 	try {
 		return [f_try(), 0];
 	}

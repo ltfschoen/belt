@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
-import type {JsonObject, JsonValue, KeysOf} from './types';
+import type {JsonObject, JsonValue, KeysOf, NaiveJsonString} from './types';
 
-import {XG_8, is_array, is_dict_es, is_string, entries, from_entries} from './belt.js';
+import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, transform_values, die, try_sync} from './belt.js';
 
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -27,6 +27,78 @@ type Uint8ArrayConstructorParams =
 	| [length: number]
 	| [array: ArrayLike<number> | ArrayBufferLike]
 	| [buffer: ArrayBufferLike, byteOffset?: number, length?: number];
+
+
+/**
+ * Typed alias to `JSON.stringify`
+ */
+export const stringify_json: <
+	w_string extends string=NaiveJsonString,
+>(
+	w_json: JsonValue,
+	f_replacer?: Parameters<typeof JSON.stringify>[1],
+	z_space?: Parameters<typeof JSON.stringify>[2],
+) => w_string = JSON.stringify;
+
+
+/**
+ * Strongly typed alias to `JSON.parse`
+ */
+export const parse_json: <
+	w_value extends JsonValue<void|undefined>=JsonValue,
+>(
+	sx_json: string,
+	f_reviver?: Parameters<typeof JSON.parse>[1],
+) => w_value = JSON.parse;
+
+
+/**
+ * Attempts to parse the given JSON string, returning `undefined` on parse error instead of throwing
+ * @param sx_json 
+ * @returns 
+ */
+export const parse_json_safe = <
+	w_out extends JsonValue<void|undefined>=JsonValue,
+// eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
+>(sx_json: string): w_out | undefined => try_sync<w_out, SyntaxError>(_ => parse_json<w_out>(sx_json))[0];
+
+/**
+ * @deprecated Use {@link parse_json_safe} instead.
+ */
+export const safe_json = parse_json_safe;
+
+
+/**
+ * Converts a JSON object (in memory) into its canonical form. Must be valid JSON with no cycles
+ * and must not contain any non-JSON values. Objects are sorted by keys, arrays are not sorted
+ * since order matters.
+ * @param w_json JSON-compatible value to canonicalize
+ * @returns canonicalized JSON value
+ */
+export const canonicalize_json = <
+	w_json extends JsonValue,
+>(w_json: w_json): w_json => {
+	// JSON object
+	if(is_dict_es(w_json)) {
+		// sort all keys
+		const h_sorted: JsonObject = from_entries(entries(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
+
+		// traverse on children
+		for(const si_key in h_sorted) {
+			h_sorted[si_key] = canonicalize_json(h_sorted[si_key] as JsonObject);
+		}
+
+		w_json = h_sorted as w_json;
+	}
+	// JSON array
+	else if(is_array(w_json)) {
+		w_json = w_json.map(w_item => canonicalize_json(w_item)) as w_json;
+	}
+
+	// boolean, number, string, or null
+	return w_json;
+};
+
 
 /**
  * Helps reduce codesize
@@ -108,7 +180,7 @@ export const zero_out = (atu8_data: number[] | Uint8Array | Uint16Array): void =
 
 	// make sure the engine does not optimize away the above memory wipe instruction
 	// @ts-expect-error signature IS compatible with both types
-	if(0 !== atu8_data.reduce((c_sum: number, x_value: number) => c_sum + x_value, 0)) throw new Error('Failed to zero out sensitive memory region');
+	if(0 !== atu8_data.reduce((c_sum: number, x_value: number) => c_sum + x_value, 0)) die('Failed to zero out sensitive memory region');
 };
 
 
@@ -173,7 +245,7 @@ export const text_to_base64 = (s_text: string): NaiveBase64 => bytes_to_base64(t
  * @param w_json JSON-compatible value to encode
  * @returns UTF-8 encoded Uint8Array
  */
-export const json_to_bytes = (w_json: JsonValue): Uint8Array => text_to_bytes(JSON.stringify(w_json));
+export const json_to_bytes = (w_json: JsonValue): Uint8Array => text_to_bytes(stringify_json(w_json));
 
 
 /**
@@ -181,11 +253,11 @@ export const json_to_bytes = (w_json: JsonValue): Uint8Array => text_to_bytes(JS
  * @param atu8_json UTF-8 encoded JSON string data
  * @returns parsed JSON value
  */
-export const bytes_to_json = (atu8_json: Uint8Array): JsonValue => JSON.parse(bytes_to_text(atu8_json));
+export const bytes_to_json = (atu8_json: Uint8Array): JsonValue => parse_json(bytes_to_text(atu8_json));
 
 
 /**
- * Encodes the given 32-bit integer in big-endian format to a new buffer.
+ * Encodes the given 32-bit unsigned integer in big-endian format to a new buffer.
  * @param xg_uint 
  * @returns 
  */
@@ -202,7 +274,7 @@ export const uint32_to_bytes_be = (xg_uint: number | bigint): Uint8Array => {
 
 
 /**
- * Decodes a 32-bit integer in big-endian format from a buffer (optionally at the given position).
+ * Decodes a 32-bit unsigned integer in big-endian format from a buffer (optionally at the given position).
  * @param n_uint 
  * @returns 
  */
@@ -210,12 +282,12 @@ export const bytes_to_uint32_be = (atu8_buffer: Uint8Array, ib_offset=0): number
 
 
 /**
- * Encodes the given bigint in big-endian format to a new 32-byte buffer, or whatever size is given.
+ * Encodes the given unsigned bigint in big-endian format to a new 32-byte buffer, or whatever size is given.
  * @param xg_value - the value to encode 
  * @param nb_size - size of the buffer to create
  * @returns the encoded buffer
  */
-export const bigint_to_bytes_be = (xg_value: bigint, nb_size=32): Uint8Array => {
+export const biguint_to_bytes_be = (xg_value: bigint, nb_size=32): Uint8Array => {
 	// prep buffer of the appropriate size
 	let atu8_out = bytes(nb_size);
 
@@ -229,57 +301,23 @@ export const bigint_to_bytes_be = (xg_value: bigint, nb_size=32): Uint8Array => 
 	return atu8_out;
 };
 
+/**
+ * @deprecated Use {@link biguint_to_bytes_be} instead.
+ */
+export const bigint_to_bytes_be = biguint_to_bytes_be;
+
 
 /**
- * Decodes a bigint in big-endian format from a buffer
+ * Decodes an unsigned bigint in big-endian format from a buffer
  * @param atu8_bytes 
  * @returns 
  */
-export const bytes_to_bigint_be = (atu8_bytes: Uint8Array): bigint => atu8_bytes.reduce((xg_out, xb_value) => (xg_out << XG_8) | BigInt(xb_value), 0n);
-
-
+export const bytes_to_biguint_be = (atu8_bytes: Uint8Array): bigint => atu8_bytes.reduce((xg_out, xb_value) => (xg_out << XG_8) | BigInt(xb_value), 0n);
 
 /**
- * Converts a JSON object into its canonical form.
- * @param w_json JSON-compatible value to canonicalize
- * @returns canonicalized JSON value
+ * @deprecated Use {@link bytes_to_biguint_be} instead.
  */
-export const canonicalize_json = <
-	w_json extends JsonValue,
->(w_json: w_json): w_json => {
-	if(is_dict_es(w_json)) {
-		// sort all keys
-		const h_sorted: JsonObject = from_entries(entries(w_json).sort((a_a, a_b) => a_a[0] < a_b[0]? -1: 1));
-
-		// traverse on children
-		for(const si_key in h_sorted) {
-			h_sorted[si_key] = canonicalize_json(h_sorted[si_key] as JsonObject);
-		}
-
-		w_json = h_sorted as w_json;
-	}
-	else if(is_array(w_json)) {
-		w_json = w_json.map(w_item => canonicalize_json(w_item)) as w_json;
-	}
-
-	return w_json;
-};
-
-
-/**
- * Attempts to parse the given JSON string, returning `undefined` on parse error instead of throwing
- * @param sx_json 
- * @returns 
- */
-export const safe_json = <
-	w_out extends JsonValue<void | undefined>=JsonValue,
-// @ts-expect-error no explicit return
->(sx_json: string): w_out | undefined => {
-	try {
-		return JSON.parse(sx_json) as w_out;
-	}
-	catch(e_parse) {}
-};
+export const bytes_to_bigint_be = bytes_to_biguint_be;
 
 
 /**
@@ -432,7 +470,7 @@ export const base64_to_bytes = (sb64_data: string): Uint8Array => {
 	for(const s_char of sb64_data) {
 		const xb_char = SX_CHARS_BASE64.indexOf(s_char);
 
-		if(-1 === xb_char) throw new Error('Invalid base64 string');
+		if(-1 === xb_char) die('Invalid base64 string');
 
 		// add 6 bits from index to buffer
 		xb_work = (xb_work << 6) | xb_char;
@@ -455,7 +493,7 @@ export const base64_to_bytes = (sb64_data: string): Uint8Array => {
 		nb_buffer -= 8;
 	}
 
-	return new Uint8Array(a_out);
+	return bytes(a_out);
 };
 
 
@@ -538,7 +576,7 @@ export const base93_to_bytes = (sb93_data: string): Uint8Array => {
 	for(const s_char of sb93_data) {
 		const xb_char = SX_CHARS_BASE93.indexOf(s_char);
 
-		if(-1 === xb_char) throw new Error('Invalid base93 string');
+		if(-1 === xb_char) die('Invalid base93 string');
 
 		if(-1 === xb_work) {
 			xb_work = xb_char;
@@ -612,12 +650,12 @@ export const bytes_to_base58 = (atu8_buffer: Uint8Array): NaiveBase58 => {
 
 export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
 	if(!sb58_buffer || !is_string(sb58_buffer)) {
-		throw new Error(`Expected base58 string but got “${sb58_buffer}”`);
+		die(`Expected base58 string but got “${sb58_buffer}”`);
 	}
 
 	const m_invalid = sb58_buffer.match(/[IOl0]/gmu);
 	if(m_invalid) {
-		throw new Error(`Invalid base58 character “${String(m_invalid)}”`);
+		die(`Invalid base58 character “${String(m_invalid)}”`);
 	}
 
 	const m_lz = sb58_buffer.match(/^1+/gmu);
@@ -640,9 +678,9 @@ export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
 };
 
 /**
- * Cryptographically strong random number
+ * Cryptographically strong random number in the range [0, 1)
  */
-export const crypto_random = (): number => crypto.getRandomValues(new Uint32Array(1))[0] / (2 ** 32);
+export const crypto_random = (): number => crypto.getRandomValues(bytes(1))[0] / (2 ** 32);
 
 /**
  * Generate a cryptographically strong random int within a given range

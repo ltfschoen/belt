@@ -6,8 +6,8 @@ settings:
 
 devDependencies:
   '@blake.regalia/eslint-config-elite':
-    specifier: ^0.4.3
-    version: 0.4.3(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(ts-node@10.9.2)(typescript@5.3.3)
+    specifier: ^0.4.4
+    version: 0.4.4(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(ts-node@10.9.2)(typescript@5.3.3)
   '@blake.regalia/tsconfig':
     specifier: ^0.2.0
     version: 0.2.0(typescript@5.3.3)
@@ -399,8 +399,8 @@ packages:
     resolution: {integrity: sha512-VuL8sfhn+lYGAow5xht5jjV75k0CfudZpWI0IWdgc2uj20X6UfdLdq4BuA6CAnVEkyWb/NVhU6cs1o5TWtzS0A==}
     dev: true
 
-  /@blake.regalia/eslint-config-elite@0.4.3(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(ts-node@10.9.2)(typescript@5.3.3):
-    resolution: {integrity: sha512-W+vsf2XOoWLYdoZ+URQFEfneBp/Ha7iueaHD71K9VigEr1db8y847dAOQ6cHsO3eA73k4mPFaed/KpvrJODy9A==}
+  /@blake.regalia/eslint-config-elite@0.4.4(@typescript-eslint/parser@7.1.0)(eslint@8.57.0)(ts-node@10.9.2)(typescript@5.3.3):
+    resolution: {integrity: sha512-Lcpi2Y2yiY2WXDzr/mfrZNYSCx6J4se8iOG/WkCdqBlaolZH0QHyyJpgqzDG1XitlQ/I/ikpruhB1F6DwEEbfg==}
     peerDependencies:
       '@typescript-eslint/parser': '>=5'
       eslint: '>=3'

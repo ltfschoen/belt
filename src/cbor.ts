@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const, no-sequences, @typescript-eslint/naming-convention */
 
 import {__UNDEFINED} from './belt.js';
-import {bytes_to_bigint_be, bytes_to_text, dataview} from './data.js';
+import {bytes_to_biguint_be, bytes_to_text, dataview} from './data.js';
 
 /**
  * Primitive CBOR datatype
@@ -98,10 +98,10 @@ export const cbor_decode_trivial = <
 			(xn_timestamp=0) => ([xn_timestamp, ib_read] = cbor_decode_trivial<number>(atu8_data, ib_read), xn_timestamp),
 
 			// unsigned bigint
-			(_?: any) => bytes_to_bigint_be(f_bytes()),
+			(_?: any) => bytes_to_biguint_be(f_bytes()),
 
 			// negative bigint
-			(_?: any) => -bytes_to_bigint_be(f_bytes()) - 1n,
+			(_?: any) => -bytes_to_biguint_be(f_bytes()) - 1n,
 		][xc_additional](),
 
 		// major type 7

@@ -1,3 +1,5 @@
+import type {NoInfer} from 'ts-toolbelt/out/Function/_api';
+
 import type {Subtype} from './types';
 
 /**
@@ -63,8 +65,8 @@ export type NaiveHexMixed<s_subtype extends string=string> = Subtype<HexMethods 
  */
 export const proper = <
 	s_input extends string | undefined,
-	z_output = s_input extends undefined ? undefined : string,
->(s_input: s_input): z_output => s_input?.split(/[\s_]+/g).map(s => s ? s[0].toUpperCase() + s.slice(1) : '').join(' ') as z_output;
+	z_output=s_input extends undefined? undefined: string,
+>(s_input: s_input): NoInfer<z_output> => s_input?.split(/[\s_]+/g).map(s => s ? s[0].toUpperCase() + s.slice(1) : '').join(' ') as z_output;
 
 /**
  * Converts given identifier to "snake_case", returning {@link s_ident} if given a falsy value
@@ -73,8 +75,8 @@ export const proper = <
  */
 export const snake = <
 	s_input extends string | undefined,
-	z_output = s_input extends undefined ? undefined : string,
->(s_ident: s_input): z_output => (s_ident
+	z_output=s_input extends undefined? undefined: string,
+>(s_ident: s_input): NoInfer<z_output> => (s_ident
 	? s_ident.toUpperCase() === s_ident
 		// depending on upper or mixed case
 		? s_ident.toLowerCase().replace(/[^a-z0-9$]+/g, '_')
@@ -88,8 +90,8 @@ export const snake = <
  */
 export const pascal = <
 	s_input extends string | undefined,
-	z_output = s_input extends undefined ? undefined : string,
->(s_ident: s_input): z_output => (s_ident
+	z_output=s_input extends undefined? undefined: string,
+>(s_ident: s_input): NoInfer<z_output> => (s_ident
 	// if all uppercase; make lower
 	? (/^([^A-Za-z]*[A-Z]+)+([^A-Za-z])?$/.test(s_ident) ? pascal(s_ident.toLowerCase()) : s_ident)
 		// convert to pascal

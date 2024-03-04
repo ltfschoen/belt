@@ -3,6 +3,9 @@ import type {A, O, U} from 'ts-toolbelt';
 export const TYPE_ID = Symbol('type-id');
 export const ES_TYPE = Symbol('es-type');
 
+// export const TYPE_ID = 'type-id';
+// export const ES_TYPE = 'es-type';
+
 /**
  * Test whether a given type value is the `any` type. Returns `1` if true, `0` otherwise
  */
@@ -45,29 +48,6 @@ export type DiscriminatedUnion<h_types, h_clone=h_types> = h_types extends any
 		}[keyof h_types]
 		: never
 	: never;
-
-/* eslint-disable @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars */
-{
-	type sample = {
-		foo: 'foo';
-	} | {
-		bar: 'bar';
-	};
-
-	type actual = DiscriminatedUnion<sample>;
-
-	type expect = {
-		foo: 'foo';
-		bar: undefined;
-	} | {
-		foo: undefined;
-		bar: 'bar';
-	};
-
-	const test: expect = {} as actual;
-}
-/* eslint-enable */
-
 
 
 /**

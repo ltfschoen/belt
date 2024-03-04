@@ -23,10 +23,10 @@
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build": "yarn build:mjs && yarn build:cjs",
     "bundle": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "test": "ava"
+    "test": "yarn build && bun test ./test/*.ts"
   },
   "devDependencies": {
-    "@blake.regalia/eslint-config-elite": "^0.4.3",
+    "@blake.regalia/eslint-config-elite": "^0.4.4",
     "@blake.regalia/tsconfig": "^0.2.0",
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-typescript": "^11.1.6",

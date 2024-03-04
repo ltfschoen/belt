@@ -8,7 +8,7 @@ import {
 
 describe('proper', () => {
 	test('undefined', () => {
-		expect(proper((void 0)!)).toBe(void 0);
+		expect(proper(void 0)).toBeUndefined();
 	});
 
 	test('empty', () => {
@@ -82,7 +82,7 @@ describe('proper', () => {
 
 describe('snake', () => {
 	test('undefined', () => {
-		expect(snake((void 0)!)).toBe(void 0);
+		expect(snake(void 0)).toBeUndefined();
 	});
 
 	test('empty', () => {
@@ -181,7 +181,7 @@ describe('snake', () => {
 
 describe('pascal', () => {
 	test('undefined', () => {
-		expect(pascal((void 0)!)).toBe(void 0);
+		expect(pascal(void 0)).toBeUndefined();
 	});
 
 	test('empty', () => {
