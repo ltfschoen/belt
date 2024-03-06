@@ -209,7 +209,7 @@ export const ode = entries;
 export const from_entries: <
 	as_keys extends PropertyKey,
 	w_values extends any,
->(a_entries: Iterable<readonly [as_keys, w_values]>) => NoInfer<Record<as_keys, w_values>> = Object.fromEntries;
+>(a_entries: Iterable<readonly [as_keys, w_values]>) => Record<as_keys, w_values> = Object.fromEntries;
 
 /**
  * @deprecated Use {@link from_entries} instead
@@ -231,7 +231,7 @@ export const map_entries = <
 >(
 	w_src: w_src,
 	f_map: (a_entry: [z_keys, z_values], i_index: number, a_all: [z_keys, z_values][]) => w_out
-): NoInfer<w_out[]> => entries<w_src, z_keys, z_values>(w_src).map(f_map);
+): w_out[] => entries<w_src, z_keys, z_values>(w_src).map(f_map);
 
 /**
  * @deprecated Use {@link map_entries} instead
@@ -253,7 +253,7 @@ export const reduce_object = <
 	w_src: w_src,
 	f_reduce: (w_prev: w_out, a_entry: [z_keys, z_values], i_index: number, a_all: [z_keys, z_values][]) => w_out,
 	w_init: w_out
-): NoInfer<w_out> => entries<w_src, z_keys, z_values>(w_src).reduce(f_reduce, w_init);
+): w_out => entries<w_src, z_keys, z_values>(w_src).reduce(f_reduce, w_init);
 
 /**
  * @deprecated Use {@link reduce_object} instead
@@ -413,7 +413,7 @@ export const fold = <
 	w_in: Iterable<w_value>,
 	f_fold: (z_value: w_value, i_each: number) => h_returned,
 	h_out: h_output={} as h_output
-): NoInfer<h_dest> => array(w_in).reduce((h_acc, z_each, i_each) => assign(h_acc!, f_fold(z_each, i_each)) as unknown as h_output, h_out) as unknown as h_dest;
+): h_dest => array(w_in).reduce((h_acc, z_each, i_each) => assign(h_acc!, f_fold(z_each, i_each)) as unknown as h_output, h_out) as unknown as h_dest;
 
 
 /**
@@ -444,7 +444,7 @@ export const collapse = <
 >(
 	w_in: Iterable<w_value>,
 	f_collapse: (z_value: w_value, i_each: number) => [z_keys, z_values]
-): NoInfer<Record<z_keys, z_values>> => from_entries(array(w_in).map(f_collapse));
+): Record<z_keys, z_values> => from_entries(array(w_in).map(f_collapse));
 
 
 /**
@@ -453,7 +453,7 @@ export const collapse = <
 export const interjoin = <
 	w_item extends any,
 	w_insert extends any,
->(a_input: w_item[], w_insert: w_insert): NoInfer<Array<w_item | w_insert>> => {
+>(a_input: w_item[], w_insert: w_insert): Array<w_item | w_insert> => {
 	const a_output: Array<w_item | w_insert> = [];
 
 	for(let i_each=0, nl_items=a_input.length; i_each<nl_items-1; i_each++) {
