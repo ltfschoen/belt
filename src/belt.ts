@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type {NoInfer} from 'ts-toolbelt/out/Function/NoInfer';
 
-import type {InsteadOfAny, JsonObject, KeyValuable, KeysOf, Promisable, TypedArray, ValuesOf} from './types';
+import type {InsteadOfAny, JsonObject, KeyValuable, StringKeysOf, Promisable, TypedArray, ValuesOf} from './types';
 
 /**
  * Utility nil buffer constant
@@ -169,7 +169,7 @@ export const oda = create;
  */
 export const keys: <
 	w_src extends KeyValuable,
->(w_src: w_src) => KeysOf<w_src>[] = Object.keys;
+>(w_src: w_src) => StringKeysOf<w_src>[] = Object.keys;
 
 /**
  * @deprecated Use {@link keys} instead
@@ -194,7 +194,7 @@ export const odv = create;
  */
 export const entries: <
 	w_src extends KeyValuable,
-	z_keys extends PropertyKey=KeysOf<w_src>,
+	z_keys extends PropertyKey=StringKeysOf<w_src>,
 	z_values=ValuesOf<w_src>,
 >(w_src: w_src) => [z_keys, z_values][] = Object.entries;
 
@@ -226,7 +226,7 @@ export const ofe = from_entries;
 export const map_entries = <
 	w_out extends any,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,
@@ -247,7 +247,7 @@ export const odem = map_entries;
 export const reduce_object = <
 	w_out extends any,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,
@@ -271,7 +271,7 @@ export const oder = reduce_object;
 export const concat_entries = <
 	w_out extends any,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,
@@ -304,7 +304,7 @@ export const oderac = concat_entries;
 export const flatten_entries = <
 	w_out extends any,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,
@@ -331,7 +331,7 @@ export const oderaf = flatten_entries;
 export const transform_object = <
 	h_out extends object,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,
@@ -357,7 +357,7 @@ export const oderom = transform_object;
 export const transform_values = <
 	w_out extends any,
 	w_src extends KeyValuable=KeyValuable,
-	z_keys extends KeysOf<w_src>=KeysOf<w_src>,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
 >(
 	w_src: w_src,

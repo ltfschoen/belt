@@ -82,19 +82,17 @@ export type Nilable<w_value> = w_value | null | undefined;
 export type Falsible<w_value> = Nilable<w_value> | 0 | false | '';
 
 /**
- * Types that can be accessed via index operator, and that work with `Object.entries()`
+ * Types that can be accessed via index operator `[key]`
  */
-export type KeyValuable = Record<any, any> | ArrayLike<any>;
+export type KeyValuable = Record<PropertyKey, any> | ArrayLike<any>;
 
 /**
- * Returns the keys of the given type, returning`${bigint}` for Array since its keys satisfy `${bigint}`
+ * Returns the string keys of the given type, returning `${bigint}` for Array since its keys satisfy `${bigint}`
  */
-export type KeysOf<w_type, b_keep_numbers=0> = w_type extends ArrayLike<any>
+export type StringKeysOf<w_type> = w_type extends ArrayLike<any>
 	? `${bigint}`
 	: w_type extends Record<infer s_key, any>
-		? s_key extends string
-			? b_keep_numbers extends 1? s_key: Exclude<s_key, number>
-			: s_key
+		? Extract<s_key, string>
 		: never;
 
 /**

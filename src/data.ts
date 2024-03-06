@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
-import type {JsonObject, JsonValue, KeysOf, NaiveJsonString} from './types';
+import type {JsonObject, JsonValue, StringKeysOf, NaiveJsonString} from './types';
 
 import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, transform_values, die, try_sync} from './belt.js';
 
