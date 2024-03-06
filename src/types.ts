@@ -89,13 +89,13 @@ export type KeyValuable = Record<any, any> | ArrayLike<any>;
 /**
  * Returns the keys of the given type, returning`${bigint}` for Array since its keys satisfy `${bigint}`
  */
-export type KeysOf<w_type> = w_type extends ArrayLike<any>
+export type KeysOf<w_type, b_keep_numbers=0> = w_type extends ArrayLike<any>
 	? `${bigint}`
-	: w_type extends JsonObject
-		? string
-		: w_type extends Record<infer s_key, any>
-			? s_key
-			: never;
+	: w_type extends Record<infer s_key, any>
+		? s_key extends string
+			? b_keep_numbers extends 1? s_key: Exclude<s_key, number>
+			: s_key
+		: never;
 
 /**
  * Returns the values of the given type, extracting the values of an Array, or the properties of an Object.
