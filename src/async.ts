@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import type {Nilable} from './types';
 
-import {__UNDEFINED, F_NOOP} from './belt';
+import {__UNDEFINED, F_NOOP} from './belt.js';
 
 /**
  * Promise-based version of `setTimeout()`
