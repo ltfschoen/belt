@@ -4,6 +4,9 @@ import type {JsonObject, JsonValue, StringKeysOf, NaiveJsonString} from './types
 
 import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, transform_values, die, try_sync} from './belt.js';
 
+export const SI_HASH_ALGORITHM_SHA256 = 'SHA-256';
+export const SI_HASH_ALGORITHM_SHA384 = 'SHA-384';
+export const SI_HASH_ALGORITHM_SHA512 = 'SHA-512';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const S_UUID_V4 = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx';
@@ -121,7 +124,7 @@ export const dataview = (...a_args: [buffer: ArrayBufferLike, byteOffset?: numbe
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-256', atu8_data));
+export const sha256 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest(SI_HASH_ALGORITHM_SHA256, atu8_data));
 
 
 /**
@@ -142,7 +145,7 @@ export const sha256d = async(atu8_data: Uint8Array): Promise<Uint8Array> => {
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-384', atu8_data));
+export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest(SI_HASH_ALGORITHM_SHA384, atu8_data));
 
 
 /**
@@ -150,7 +153,21 @@ export const sha384 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes
  * @param atu8_data data to hash
  * @returns the hash digest
  */
-export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest('SHA-512', atu8_data));
+export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes(await crypto.subtle.digest(SI_HASH_ALGORITHM_SHA512, atu8_data));
+
+
+/**
+ * Imports a {@link CryptoKey} from raw bytes
+ * @param atu8_sk - the key as raw bytes
+ * @param z_algo - the algorithm argument
+ * @param da_usages - key usages argument
+ * @returns the CryptoKey
+ */
+const import_key = (
+	atu8_sk: Uint8Array,
+	z_algo: Parameters<SubtleCrypto['importKey']>[2],
+	da_usages: Parameters<SubtleCrypto['importKey']>[4]
+): Promise<CryptoKey> => crypto.subtle.importKey('raw', atu8_sk, z_algo, false, da_usages);
 
 
 /**
@@ -159,15 +176,47 @@ export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes
  * @param atu8_message message to sign, **not the digest**.
  * @returns HMAC signature
  */
-export const hmac = async(atu8_sk: Uint8Array, atu8_message: Uint8Array, si_algo: 'SHA-256'|'SHA-512'='SHA-256'): Promise<Uint8Array> => {
+export const hmac = async(
+	atu8_sk: Uint8Array,
+	atu8_message: Uint8Array,
+	si_algo: 'SHA-256'|'SHA-384'|'SHA-512'=SI_HASH_ALGORITHM_SHA256
+): Promise<Uint8Array> => {
 	// import signing private key
-	const dk_sign = await crypto.subtle.importKey('raw', atu8_sk, {
+	const dk_sign = await import_key(atu8_sk, {
 		name: 'HMAC',
 		hash: {name:si_algo},
-	}, false, ['sign']);
+	}, ['sign']);
 
 	// construct hmac signature
 	return bytes(await crypto.subtle.sign('HMAC', dk_sign, atu8_message));
+};
+
+
+/**
+ * Performs HKDF on the given IKM
+ * @param atu8_ikm - the input key material bytes
+ * @param ni_bits - number of bits to target
+ * @param atu8_salt - salt bytes
+ * @param atu8_info - optional info bytes
+ * @param si_algo - hashing algorithm to use
+ */
+export const hkdf = async(
+	atu8_ikm: Uint8Array,
+	ni_bits: number,
+	atu8_salt: Uint8Array,
+	atu8_info: Uint8Array=bytes(),
+	si_algo: 'SHA-256'|'SHA-384'|'SHA-512'=SI_HASH_ALGORITHM_SHA256
+): Promise<Uint8Array> => {
+	// import deriving key
+	const dk_derive = await import_key(atu8_ikm, 'HKDF', ['deriveBits']);
+
+	// derive the bits
+	return bytes(await crypto.subtle.deriveBits({
+		name: 'HKDF',
+		hash: si_algo,
+		salt: atu8_salt,
+		info: atu8_info,
+	}, dk_derive, ni_bits));
 };
 
 
