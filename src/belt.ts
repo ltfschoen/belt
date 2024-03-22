@@ -138,6 +138,17 @@ export const array: <
 
 
 /**
+ * Traverses an {@link Iterable}
+ */
+export const each: <
+	w_value,
+>(
+	w_in: Iterable<w_value>,
+	f_each: (w_value: w_value, i_each: number) => void,
+) => void = (w_in, f_each) => array(w_in).forEach(f_each);
+
+
+/**
  * Typed alias to `Object.create`
  */
 export const create: <

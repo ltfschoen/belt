@@ -1,8 +1,32 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {keys, values, entries, map_entries, reduce_object, fold} from 'src/belt';
+import {each, keys, values, entries, map_entries, reduce_object, fold} from 'src/belt';
 
-// odk
+// each
+{
+	// empty array
+	each([], () => {});
+
+	// array of strings
+	each([''], (s_each, i_each) => {
+		const B_STRING: string extends typeof s_each? 1: 0 = 1;
+		const B_INDEX: number extends typeof i_each? 1: 0 = 1;
+	});
+
+	// set of strings
+	each(new Set<string>(), (s_each, i_each) => {
+		const B_STRING: string extends typeof s_each? 1: 0 = 1;
+		const B_INDEX: number extends typeof i_each? 1: 0 = 1;
+	});
+
+	// set of strong literals
+	each(new Set<`${bigint}`>(), (s_each, i_each) => {
+		const B_STRING: `${bigint}` extends typeof s_each? 1: 0 = 1;
+		const B_INDEX: number extends typeof i_each? 1: 0 = 1;
+	});
+}
+
+// keys
 {
 	const a_dict_never = keys({});
 	const B_DICT_NEVER: never[] extends typeof a_dict_never? 1: 0 = 1;
@@ -23,7 +47,7 @@ import {keys, values, entries, map_entries, reduce_object, fold} from 'src/belt'
 	const B_ARRAY_STRINGS: `${bigint}`[] extends typeof a_array_strings? 1: 0 = 1;
 }
 
-// odv
+// values
 {
 	const a_dict_never = values({});
 	const B_DICT_NEVER: never[] extends typeof a_dict_never? 1: 0 = 1;
@@ -44,7 +68,7 @@ import {keys, values, entries, map_entries, reduce_object, fold} from 'src/belt'
 	const B_ARRAY_STRINGS: string[] extends typeof a_array_strings? 1: 0 = 1;
 }
 
-// ode
+// entries
 {
 	const a_dict_never = entries({});
 	const B_DICT_NEVER: [never, never][] extends typeof a_dict_never? 1: 0 = 1;
@@ -65,7 +89,7 @@ import {keys, values, entries, map_entries, reduce_object, fold} from 'src/belt'
 	const B_ARRAY_STRINGS: [`${bigint}`, string][] extends typeof a_array_strings? 1: 0 = 1;
 }
 
-// odem
+// map_entries
 {
 	const a_dict_string_weak = map_entries({a:'A', b:'B'}, ([si_keys, s_values]) => {
 		const B_KEYS: 'a' | 'b' extends typeof si_keys? 1: 0 = 1;
@@ -100,7 +124,7 @@ import {keys, values, entries, map_entries, reduce_object, fold} from 'src/belt'
 	const B_ARRAY_NUMBERS: number[] extends typeof a_array_numbers? 1: 0 = 1;
 }
 
-// oder
+// reduce_object
 {
 	const a_dict_string_weak = reduce_object({a:'A', b:'B'}, (s_acc, [si_keys, s_values]) => {
 		const B_ACC: string extends typeof s_acc? 1: 0 = 1;
