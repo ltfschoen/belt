@@ -110,45 +110,14 @@ export const defer = <w_return extends any=any>(): [
 			fk_resolve = fk as typeof fk_resolve;
 			fe_reject = fe;
 		}),
-		((w_return?: w_return, e_reject?: Error) => {
+		(w_return_p?: Nilable<w_return> | void, e_reject?: Error) => {
 			if(e_reject) {
 				fe_reject(e_reject);
 			}
 			else {
-				fk_resolve(w_return);
+				// ts 5.4 is so broken
+				fk_resolve(w_return_p as void | undefined);
 			}
-		}) as typeof fk_resolve,
+		},
 	];
 };
-
-// export const defer_many = <
-// 	h_input extends Dict<unknown>,
-// >(h_input: h_input): {
-// 	promises: {
-// 		[si_each in keyof typeof h_input]: Promise<typeof h_input[si_each]>;
-// 	};
-// 	resolve(h_resolves: {
-// 		[si_each in keyof typeof h_input]?: typeof h_input[si_each];
-// 	}): void;
-// 	reject(h_rejects: {
-// 		[si_each in keyof typeof h_input]?: Error;
-// 	}): void;
-// } => {
-// 	const h_mapped: Dict<ReturnType<typeof defer>> = transform_values(h_input, () => defer());
-
-// 	return {
-// 		promises: transform_values(h_mapped, a_defer => a_defer[0]) as {
-// 			[si_each in keyof typeof h_input]: Promise<typeof h_input[si_each]>;
-// 		},
-// 		resolve(h_resolves) {
-// 			for(const si_key in h_resolves) {
-// 				h_mapped[si_key]?.[1](h_resolves[si_key]);
-// 			}
-// 		},
-// 		reject(h_rejects) {
-// 			for(const si_key in h_rejects) {
-// 				h_mapped[si_key]?.[1](__UNDEFINED, h_rejects[si_key]);
-// 			}
-// 		},
-// 	};
-// };
