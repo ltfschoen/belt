@@ -19,11 +19,11 @@
     "dist"
   ],
   "scripts": {
-    "build:mjs": "yarn tsc -p tsconfig.mjs.json",
-    "build:cjs": "yarn tsc -p tsconfig.cjs.json",
-    "build": "yarn build:mjs && yarn build:cjs",
+    "build:mjs": "tsc -p tsconfig.mjs.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build": "pnpm run build:mjs && pnpm run build:cjs",
     "bundle": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "test": "yarn build && bun test ./test/*.ts"
+    "test": "pnpm run build && bun test ./test/*.ts"
   },
   "devDependencies": {
     "@blake.regalia/eslint-config-elite": "^0.4.4",
@@ -32,7 +32,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.30",
     "@types/web": "^0.0.142",
-    "@typescript-eslint/parser": "^7.3.1",
+    "@typescript-eslint/parser": "^7.4.0",
     "bun": "^1.0.35",
     "bun-types": "^1.0.35",
     "eslint": "^8.57.0",
