@@ -158,16 +158,17 @@ export const sha512 = async(atu8_data: Uint8Array): Promise<Uint8Array> => bytes
 
 /**
  * Imports a {@link CryptoKey} from raw bytes
- * @param atu8_sk - the key as raw bytes
- * @param z_algo - the algorithm argument
+ * @param atu8_sk - the key's raw bytes
+ * @param z_algo - the algorithm argument passed to `SubtleCrypto#importKey()`
  * @param da_usages - key usages argument
- * @returns the CryptoKey
+ * @returns the imported {@link CryptoKey}
  */
-const import_key = (
+export const import_key = (
 	atu8_sk: Uint8Array,
 	z_algo: Parameters<SubtleCrypto['importKey']>[2],
-	da_usages: Parameters<SubtleCrypto['importKey']>[4]
-): Promise<CryptoKey> => crypto.subtle.importKey('raw', atu8_sk, z_algo, false, da_usages);
+	da_usages: Parameters<SubtleCrypto['importKey']>[4],
+	b_extractable=false
+): Promise<CryptoKey> => crypto.subtle.importKey('raw', atu8_sk, z_algo, b_extractable, da_usages);
 
 
 /**
