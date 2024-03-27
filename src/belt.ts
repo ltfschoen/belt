@@ -38,7 +38,7 @@ export const F_NOOP = () => {};  // eslint-disable-line
 /**
  * The "identity" function
  */
-export const F_IDENTITY = <w_type>(w: w_type): w_type => w;  // eslint-disable-line
+export const F_IDENTITY = <w_in, w_out=w_in>(w: w_in): w_out => w as unknown as w_out;  // eslint-disable-line
 
 /**
  * Casts the given argument to a specific type.
