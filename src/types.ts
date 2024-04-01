@@ -91,8 +91,10 @@ export type KeyValuable = Record<PropertyKey, any> | ArrayLike<any>;
  */
 export type StringKeysOf<w_type> = w_type extends ArrayLike<any>
 	? `${bigint}`
-	: w_type extends Record<infer s_key, any>
-		? Extract<s_key, string>
+	: w_type extends Record<infer z_key, any>
+		? z_key extends boolean | number | bigint | string | null | undefined
+			? `${z_key}`
+			: never
 		: never;
 
 /**
