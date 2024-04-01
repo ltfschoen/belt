@@ -1,5 +1,7 @@
 import type {A, O, U} from 'ts-toolbelt';
 
+import type {NaiveHexLower} from './strings';
+
 export const TYPE_ID = Symbol('type-id');
 export const ES_TYPE = Symbol('es-type');
 
@@ -92,10 +94,17 @@ export type KeyValuable = Record<PropertyKey, any> | ArrayLike<any>;
 export type StringKeysOf<w_type> = w_type extends ArrayLike<any>
 	? `${bigint}`
 	: w_type extends Record<infer z_key, any>
-		? z_key extends boolean | number | bigint | string | null | undefined
-			? `${z_key}`
-			: never
+		? z_key extends string
+			? z_key
+			: z_key extends number
+				? `${number}`
+				: z_key extends bigint
+					? `${bigint}`
+					: z_key extends boolean | null | undefined
+						? `${z_key}`
+						: never
 		: never;
+
 
 /**
  * Returns the values of the given type, extracting the values of an Array, or the properties of an Object.
