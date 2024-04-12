@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type {NoInfer} from 'ts-toolbelt/out/Function/NoInfer';
 
-import type {InsteadOfAny, JsonObject, KeyValuable, StringKeysOf, Promisable, TypedArray, ValuesOf} from './types';
+import type {InsteadOfAny, JsonObject, KeyValuable, StringKeysOf, Promisable, TypedArray, ValuesOf, AnyBoolish, IfBoolishTrue} from './types';
 
 /**
  * Utility nil buffer constant
@@ -284,20 +284,23 @@ export const concat_entries = <
 	w_src extends KeyValuable=KeyValuable,
 	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
 	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
+	b_keep_undefs extends AnyBoolish=AnyBoolish,
 >(
 	w_src: w_src,
 	f_concat: (si_key: z_keys, w_value: z_values, i_entry: number) => w_out,
-	b_keep_undefs: 0 | 1 | boolean | undefined=0,
+	b_keep_undefs: AnyBoolish=0,
 	a_out: w_out[]=[]
-): NoInfer<w_out[]> => reduce_object<w_out[], w_src, z_keys, z_values>(w_src, (a_acc, [si_key, w_value], i_entry) => {
+): NoInfer<IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>[]> => reduce_object<
+	IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out
+>[], w_src, z_keys, z_values>(w_src, (a_acc, [si_key, w_value], i_entry) => {
 	// invoke callback and capture return value
 	const w_add = f_concat(si_key, w_value, i_entry);
 
 	// add result to array iff not undefined or if undefined values are explictly allowed
-	if(__UNDEFINED !== w_add || b_keep_undefs) a_acc.push(w_add);
+	if(__UNDEFINED !== w_add || b_keep_undefs) a_acc.push(w_add as IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>);
 
 	return a_acc;
-}, a_out);
+}, a_out as IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>[]);
 
 /**
  * @deprecated Use {@link concat_entries} instead

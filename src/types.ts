@@ -233,3 +233,18 @@ declare global {
 	// 	keys<z_obj extends {}>(o: z_obj): z_obj extends Record<infer as_keys, any>? as_keys[]: string[];
 	// }
 }
+
+/**
+ * Anything that is plainly boolish, including undefined
+ */
+export type AnyBoolish = 0 | 1 | boolean | undefined;
+
+export type IfBoolishTrue<
+	b_boolish extends AnyBoolish,
+	w_then,
+	w_else,
+> = [b_boolish] extends [0 | false | undefined]
+	? w_else
+	: [AnyBoolish] extends [b_boolish]
+		? w_else
+		: w_then;
