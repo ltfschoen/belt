@@ -290,17 +290,17 @@ export const concat_entries = <
 	f_concat: (si_key: z_keys, w_value: z_values, i_entry: number) => w_out,
 	b_keep_undefs: AnyBoolish=0,
 	a_out: w_out[]=[]
-): NoInfer<IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>[]> => reduce_object<
-	IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out
->[], w_src, z_keys, z_values>(w_src, (a_acc, [si_key, w_value], i_entry) => {
+): NoInfer<IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]> => reduce_object<
+	IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[], w_src, z_keys, z_values
+>(w_src, (a_acc, [si_key, w_value], i_entry) => {
 	// invoke callback and capture return value
 	const w_add = f_concat(si_key, w_value, i_entry);
 
 	// add result to array iff not undefined or if undefined values are explictly allowed
-	if(__UNDEFINED !== w_add || b_keep_undefs) a_acc.push(w_add as IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>);
+	if(__UNDEFINED !== w_add || b_keep_undefs) a_acc.push(w_add as IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>);
 
 	return a_acc;
-}, a_out as IfBoolishTrue<b_keep_undefs, NonNullable<w_out>, w_out>[]);
+}, a_out as IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]);
 
 /**
  * @deprecated Use {@link concat_entries} instead
