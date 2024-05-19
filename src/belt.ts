@@ -249,6 +249,26 @@ export const map_entries = <
  */
 export const odem = map_entries;
 
+
+/**
+ * Filter an object's entries to form a new object. Equivalent to:
+ * ```ts
+ * w_obj => Object.fromEntries(Object.entries(w_obj).filter(f_filter))
+ * ```
+ * @param w_src - value that will get passed to `Object.entries`
+ * @param f_filter - callback having signature `(key, value, index) => boolean`
+ * @returns a new object containing only the entries approved by {@link f_filter}
+ */
+export const filter_object = <
+	w_src extends KeyValuable=KeyValuable,
+	z_keys extends StringKeysOf<w_src>=StringKeysOf<w_src>,
+	z_values extends ValuesOf<w_src>=ValuesOf<w_src>,
+>(
+	w_src: w_src,
+	f_filter: (si_key: z_keys, w_value: z_values, i_index: number) => AnyBoolish | null
+): Record<z_keys, z_values | undefined> => from_entries<z_keys, z_values | undefined>(entries<w_src, z_keys, z_values>(w_src).filter(f_filter as () => boolean));
+
+
 /**
  * Reduce an object to an arbitrary type by its entries. Alias of
  * ```ts
