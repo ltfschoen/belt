@@ -137,7 +137,8 @@ export type NaiveJsonString<
 /**
  * Root type for all objects considered to be parsed JSON objects
  */
-export type JsonObject<w_inject extends any=never> = {  // eslint-disable-line
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+export type JsonObject<w_inject extends any=never> = {
 	[k: string]: JsonValue<w_inject>;
 };
 
@@ -181,13 +182,15 @@ export type RemoveJsonInterfaces<w_type> = Exclude<A.Compute<Exclude<Extract<w_t
  */
 export type AsJson<
 	z_test extends JsonValue | {} | {}[],
-> = z_test extends JsonValue? z_test
+	w_inject extends unknown=never,
+> = z_test extends JsonValue<w_inject>? z_test
 	: z_test extends Array<infer w_type>
-		? AsJson<w_type>[]
-		: {
-			[si_each in keyof z_test]: AsJson<z_test[si_each]>;
-		};
-
+		? AsJson<w_type, w_inject>[]
+		: object extends z_test
+			? JsonObject<w_inject>
+			: {
+				[si_each in keyof z_test]: AsJson<z_test[si_each], w_inject>;
+			};
 
 // augment global functions
 declare global {
