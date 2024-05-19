@@ -186,11 +186,19 @@ export type AsJson<
 > = z_test extends JsonValue<w_inject>? z_test
 	: z_test extends Array<infer w_type>
 		? AsJson<w_type, w_inject>[]
-		: object extends z_test
+		: [object] extends [z_test]
 			? JsonObject<w_inject>
 			: {
 				[si_each in keyof z_test]: AsJson<z_test[si_each], w_inject>;
 			};
+
+type S = {
+	msg: object | number;
+};
+
+type insp = AsJson<S>;
+
+type check = insp extends JsonValue? 'y': 'n';
 
 // augment global functions
 declare global {
