@@ -572,8 +572,8 @@ export const string8_to_bytes = (sx_buffer: string): Uint8Array => {
  */
 export const bytes_to_string8 = (atu8_bytes: Uint8Array): string => {
 	let sx_buffer = '';
-	for(let i_read=0; i_read<atu8_bytes.length; i_read++) {
-		sx_buffer += String.fromCharCode(atu8_bytes[i_read]);
+	for(const xb_value of atu8_bytes) {
+		sx_buffer += String.fromCharCode(xb_value);
 	}
 
 	return sx_buffer;

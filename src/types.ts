@@ -1,12 +1,9 @@
 import type {A, O, U} from 'ts-toolbelt';
 
-import type {NaiveHexLower} from './strings';
-
-export const TYPE_ID = Symbol('type-id');
-export const ES_TYPE = Symbol('es-type');
-
-// export const TYPE_ID = 'type-id';
-// export const ES_TYPE = 'es-type';
+// would much prefer to use Symbol here, but TypeScript treats them as different types
+// if dependency versions don't align
+export const TYPE_ID = '__TYPE_ID';
+export const ES_TYPE = '__ES_TYPE';
 
 /**
  * Test whether a given type value is the `any` type. Returns `1` if true, `0` otherwise
