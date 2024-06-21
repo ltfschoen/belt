@@ -375,7 +375,7 @@ export const bytes_to_bigint_be = bytes_to_biguint_be;
  * @param a_buffers the data to concatenate in order
  * @returns the concatenated output Uint8Array
  */
-export const concat = (a_buffers: Uint8Array[]): Uint8Array => {
+export const concat = (a_buffers: readonly Uint8Array[]): Uint8Array => {
 	const nb_out = a_buffers.reduce((c_bytes, atu8_each) => c_bytes + atu8_each.byteLength, 0);
 	const atu8_out = bytes(nb_out);
 	let ib_write = 0;
@@ -436,7 +436,7 @@ export const bytes_to_base64_slim = (atu8_buffer: Uint8Array): NaiveBase64 => bt
  * @param sx_buffer input base64-encoded string
  * @returns output buffer
  */
-export const base64_to_bytes_slim = (sx_buffer: string): Uint8Array => bytes(atob(sx_buffer).split('').map(s => s.charCodeAt(0)));
+export const base64_to_bytes_slim = (sx_buffer: string): Uint8Array => bytes(atob(sx_buffer.replace(/=+$/, '')).split('').map(s => s.charCodeAt(0)));
 
 
 const SX_CHARS_BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -509,38 +509,40 @@ export const bytes_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
  * @returns output buffer
  */
 export const base64_to_bytes = (sb64_data: string): Uint8Array => {
-	const nl_padding = sb64_data.match(/=$/g)?.length || 0;
-	sb64_data = sb64_data.replace(/=/g, '');
+	// count how many padding characters there are
+	const nl_padding = sb64_data.match(/=+$/)?.[0].length || 0;
+
+	// remove padding from string
+	sb64_data = sb64_data.replace(/=+$/, '');
 
 	let xb_work = 0;
 	let nb_buffer = 0;
 
+	// prep output values
 	const a_out: number[] = [];
 
+	// each character
 	for(const s_char of sb64_data) {
+		// decode character value
 		const xb_char = SX_CHARS_BASE64.indexOf(s_char);
 
+		// invalid base64-encoding
 		if(-1 === xb_char) die('Invalid base64 string');
 
 		// add 6 bits from index to buffer
 		xb_work = (xb_work << 6) | xb_char;
+
+		// increase size of buffer
 		nb_buffer += 6;
 
-		do {
-			if(nb_buffer >= 8) {
-				a_out.push(xb_work >>> (nb_buffer - 8));
-				nb_buffer -= 8;
-			}
-		} while(nb_buffer >= 8);
-	}
+		// a whole byte exists in the buffer
+		if(nb_buffer >= 8) {
+			// move byte out of buffer
+			a_out.push(xb_work >>> (nb_buffer -= 8));
 
-	// Adjust for padding by removing bits added
-	nb_buffer -= nl_padding * 2;
-
-	// Convert remaining bits in the buffer to bytes (if any)
-	while(nb_buffer >= 8) {
-		a_out.push(xb_work >>> (nb_buffer - 8));
-		nb_buffer -= 8;
+			// trim the buffer
+			xb_work &= (1 << nb_buffer) - 1;
+		}
 	}
 
 	return bytes(a_out);
@@ -548,18 +550,33 @@ export const base64_to_bytes = (sb64_data: string): Uint8Array => {
 
 
 /**
- * Converts the given UTF-8 friendly compact string to a buffer.
+ * Converts the given raw string (no encoding) to bytes.
  * @param sx_buffer input string
  * @returns output buffer
  */
 export const string8_to_bytes = (sx_buffer: string): Uint8Array => {
-	const nl_pairs = sx_buffer.length;
-	const atu8_buffer = bytes(nl_pairs);
-	for(let i_read=0; i_read<nl_pairs; i_read++) {
+	const nl_chars = sx_buffer.length;
+	const atu8_buffer = bytes(nl_chars);
+	for(let i_read=0; i_read<nl_chars; i_read++) {
 		atu8_buffer[i_read] = sx_buffer.charCodeAt(i_read);
 	}
 
 	return atu8_buffer;
+};
+
+
+/**
+ * Converts the given bytes to a raw string (no encoding).
+ * @param at8u_bytes input bytes
+ * @returns output string
+ */
+export const bytes_to_string8 = (atu8_bytes: Uint8Array): string => {
+	let sx_buffer = '';
+	for(let i_read=0; i_read<atu8_bytes.length; i_read++) {
+		sx_buffer += String.fromCharCode(atu8_bytes[i_read]);
+	}
+
+	return sx_buffer;
 };
 
 

@@ -2,30 +2,34 @@ import type {NaiveBase64} from 'dist/mjs/strings';
 
 import {describe, test, expect} from 'bun:test';
 
-import {base58_to_bytes, bytes_to_base58, bytes_to_text, sha256} from 'src/data';
-
 import {
 	cast,
 } from '../dist/mjs/belt';
 
 import {
-	bytes_to_biguint_be,
-	biguint_to_bytes_be,
+	concat,
 	bytes,
 	bytes_to_hex,
+	hex_to_bytes,
+	bytes_to_biguint_be,
+	biguint_to_bytes_be,
 	canonicalize_json,
-	text_to_base64,
-	base64_to_text,
-	concat,
+	bytes_to_text,
 	text_to_bytes,
-	bytes_to_base64_slim,
-	base64_to_bytes_slim,
-	sha512,
+	bytes_to_base58,
+	base58_to_bytes,
 	bytes_to_base64,
 	base64_to_bytes,
+	text_to_base64,
+	base64_to_text,
+	bytes_to_base64_slim,
+	base64_to_bytes_slim,
 	bytes_to_base93,
 	base93_to_bytes,
+	sha256,
+	sha512,
 } from '../dist/mjs/data';
+import { bytes_to_string8 } from 'src/data';
 
 
 
@@ -168,29 +172,54 @@ describe('canonicalize_json', () => {
 });
 
 describe('base64', () => {
+	const h_tests_correct = {
+		'b': 'Yg==',
+		'bl': 'Ymw=',
+		'bla': 'Ymxh',
+		'blak': 'Ymxhaw==',
+		'blake': 'Ymxha2U=',
+		'\0': 'AA==',
+		'\0\0': 'AAA=',
+		'\0\0\0': 'AAAA',
+		'\0\0\0\0': 'AAAAAA==',
+		'👍✅': '8J+RjeKchQ==',
+	};
+
+	const h_tests_hex = {
+		'2bf7cc2701fe4397b49ebeed5acc7090': 'K/fMJwH+Q5e0nr7tWsxwkA==',
+	};
+
+	const h_tests_fuzzy = {
+		'Yg': 'b',
+		'Yg=': 'b',
+	};
+
 	for(const [s_variant, f_encoder, f_decoder] of [
 		['default', bytes_to_base64, base64_to_bytes],
 		['slim', bytes_to_base64_slim, base64_to_bytes_slim],
 	] as const) {
-		const h_tests = {
-			'b': 'Yg==',
-			'bl': 'Ymw=',
-			'bla': 'Ymxh',
-			'blak': 'Ymxhaw==',
-			'blake': 'Ymxha2U=',
-			'\0': 'AA==',
-			'\0\0': 'AAA=',
-			'\0\0\0': 'AAAA',
-			'\0\0\0\0': 'AAAAAA==',
-			'👍✅': '8J+RjeKchQ==',
-		};
-
-		for(const [s_input, s_output] of Object.entries(h_tests)) {
-			test(`${s_variant}: ${s_input} => ${s_output}`, () => {
+		for(const [s_input, s_output] of Object.entries(h_tests_correct)) {
+			test(`${s_variant}/encode: ${s_input} => ${s_output}`, () => {
 				expect(f_encoder(text_to_bytes(s_input))).toBe(cast<NaiveBase64>(s_output));
 			});
 
-			test(`${s_variant}: ${s_output} => ${s_input}`, () => {
+			test(`${s_variant}/decode: ${s_output} => ${s_input}`, () => {
+				expect(bytes_to_text(f_decoder(s_output))).toBe(s_input);
+			});
+		}
+
+		for(const [s_input, s_output] of Object.entries(h_tests_hex)) {
+			test(`${s_variant}/encode: 0x${s_input} => ${s_output}`, () => {
+				expect(f_encoder(hex_to_bytes(s_input))).toBe(cast<NaiveBase64>(s_output));
+			});
+
+			test(`${s_variant}/decode: 0x${s_input} => ${s_output}`, () => {
+				expect(bytes_to_hex(f_decoder(s_output))).toBe(s_input);
+			});
+		}
+
+		for(const [s_output, s_input] of Object.entries(h_tests_fuzzy)) {
+			test(`${s_variant}/decode: ${s_output} => ${s_input}`, () => {
 				expect(bytes_to_text(f_decoder(s_output))).toBe(s_input);
 			});
 		}

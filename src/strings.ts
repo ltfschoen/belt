@@ -34,12 +34,12 @@ interface HexMethods {
 }
 
 interface HexLowerMethods extends HexMethods {
-	concat(...a_lowers: NaiveHexLower[]): NaiveHexLower;
+	concat(...a_lowers: readonly NaiveHexLower[]): NaiveHexLower;
 	concat(...a_uppers: (NaiveHexUpper | NaiveHexMixed)[]): NaiveHexMixed;
 }
 
 interface HexUpperMethods extends HexMethods {
-	concat(...a_uppers: NaiveHexUpper[]): NaiveHexUpper;
+	concat(...a_uppers: readonly NaiveHexUpper[]): NaiveHexUpper;
 	concat(...a_lowers: (NaiveHexLower | NaiveHexMixed)[]): NaiveHexMixed;
 }
 

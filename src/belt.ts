@@ -308,9 +308,10 @@ export const concat_entries = <
 >(
 	w_src: w_src,
 	f_concat: (si_key: z_keys, w_value: z_values, i_entry: number) => w_out,
-	b_keep_undefs: AnyBoolish=0,
+	b_keep_undefs: b_keep_undefs=0 as b_keep_undefs,
 	a_out: w_out[]=[]
-): NoInfer<IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]> => reduce_object<
+): NoInfer<IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]> => 
+	reduce_object<
 	IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[], w_src, z_keys, z_values
 >(w_src, (a_acc, [si_key, w_value], i_entry) => {
 	// invoke callback and capture return value
@@ -487,7 +488,7 @@ export const collapse = <
 export const interjoin = <
 	w_item extends any,
 	w_insert extends any,
->(a_input: w_item[], w_insert: w_insert): Array<w_item | w_insert> => {
+>(a_input: readonly w_item[], w_insert: w_insert): Array<w_item | w_insert> => {
 	const a_output: Array<w_item | w_insert> = [];
 
 	for(let i_each=0, nl_items=a_input.length; i_each<nl_items-1; i_each++) {
@@ -502,20 +503,21 @@ export const interjoin = <
 };
 
 /**
- * Removes duplicates from an array, keeping only the first occurrence of each value. Optionally accepts
- * an identity argument for deduplicating lists of objects using a key or callback function.
+ * Creates a copy of the original array with duplicates removed, keeping only the first occurrence of each value.
+ * Optionally accepts an identity argument for deduplicating lists of objects using a key or callback function.
  * @param a_items - the items to deduplicate
  * @param z_identify - defines how to identify items in the list
  *  - if given a string, specifes the key of each item whose value should be used to identify it
  *  - if given a function, used as a callback to produce the comparison key
  *  - if omitted, compares items using strict equality
+ * @returns the new array
  */
 export const deduplicate = <
 	z_item extends any,
 	s_key extends keyof z_item=keyof z_item,
->(a_items: z_item[], z_identify?: s_key | ((z_item: z_item) => any)): typeof a_items => {
+>(a_items: readonly z_item[], z_identify?: s_key | ((z_item: z_item) => any)): typeof a_items => {
 	// compare items exactly by default
-	let a_keys: any[] = a_items;
+	let a_keys: readonly any[] = a_items;
 
 	// identify argument
 	if(z_identify) {
@@ -569,7 +571,7 @@ export const random_int = (x_a: number, x_b = 0): number => {
 
 
 /**
- * Shuffles an array
+ * Shuffles an array in-place and returns it
  */
 export const shuffle = <
 	w_list extends Array<any> | TypedArray,
@@ -588,7 +590,7 @@ export const shuffle = <
 };
 
 /**
- * Removes the first occurrence of the given item from the array
+ * Removes the first occurrence of the given item from the array in-place and returns the array
  * @param a_items 
  * @param w_item 
  * @returns 

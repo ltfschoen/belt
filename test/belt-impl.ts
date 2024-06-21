@@ -52,13 +52,13 @@ const h_test = {
 	a: 'A',
 	b: 'B',
 	c: 'C',
-};
+} as const;
 
 const a_test = [
 	'A',
 	'B',
 	'C',
-];
+] as const;
 
 const expect_only = (f_test: (w_value: any) => boolean, si_expect?: keyof typeof h_typeofs) => {
 	for(const [si_key, z_value] of Object.entries(h_typeofs)) {
@@ -347,7 +347,7 @@ describe('deduplicate', () => {
 
 describe('shuffle', () => {
 	test('simple array', () => {
-		expect(shuffle(a_test).sort()).toEqual(a_test);
+		expect(shuffle(a_test.slice()).sort()).toEqual(a_test);
 	});
 });
 
