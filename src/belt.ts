@@ -310,8 +310,7 @@ export const concat_entries = <
 	f_concat: (si_key: z_keys, w_value: z_values, i_entry: number) => w_out,
 	b_keep_undefs: b_keep_undefs=0 as b_keep_undefs,
 	a_out: w_out[]=[]
-): NoInfer<IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]> => 
-	reduce_object<
+): NoInfer<IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[]> => reduce_object<
 	IfBoolishTrue<b_keep_undefs, w_out, NonNullable<w_out>>[], w_src, z_keys, z_values
 >(w_src, (a_acc, [si_key, w_value], i_entry) => {
 	// invoke callback and capture return value
@@ -600,6 +599,27 @@ export const remove = <w_item>(a_items: w_item[], w_item: w_item): w_item[] => {
 	if(i_item >= 0) a_items.splice(i_item, 1);
 	return a_items;
 };
+
+/**
+ * Commonly used reducer function to compute sum of a list numbers
+ * @param a_values - list of values to sum
+ * @returns the sum
+ */
+export const sum = (a_values: number[]): number => a_values.reduce((x_a, x_b) => x_a + x_b, 0);
+
+/**
+ * Reducer function to compute product of a list numbers
+ * @param a_values - list of values to multiply
+ * @returns the sum
+ */
+export const product = (a_values: number[]): number => a_values.reduce((x_a, x_b) => x_a * x_b, 0);
+
+/**
+ * Normalizes a list numbers
+ * @param a_values - list of values to normalize
+ * @returns a new array representing the normalized values
+ */
+export const normalize = (a_values: number[], x_sum=sum(a_values) as never): number[] => a_values.map(x => x / x_sum);
 
 /**
  * Throws an error, accepting an optional piece of data to attach to the object

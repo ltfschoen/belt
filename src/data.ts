@@ -1,12 +1,60 @@
 /* eslint-disable prefer-const */
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
-import type {JsonObject, JsonValue, StringKeysOf, NaiveJsonString} from './types';
+import type {JsonObject, JsonValue, NaiveJsonString} from './types';
 
-import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, transform_values, die, try_sync} from './belt.js';
+import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, die, try_sync} from './belt.js';
 
 export const SI_HASH_ALGORITHM_SHA256 = 'SHA-256';
 export const SI_HASH_ALGORITHM_SHA384 = 'SHA-384';
 export const SI_HASH_ALGORITHM_SHA512 = 'SHA-512';
+
+// /**
+//  * Alias of `Math.max`
+//  */
+// export const max = Math.max;
+
+// /**
+//  * Alias of `Math.min`
+//  */
+// export const min = Math.min;
+
+// /**
+//  * Alias of `Math.abs`
+//  */
+// export const abs = Math.abs;
+
+
+/**
+ * Returns the lesser of the two `bigint` values
+ */
+export const bigint_lesser = (xg_a: bigint, xg_b: bigint): bigint => xg_a < xg_b? xg_a: xg_b;
+
+/**
+ * Returns the greater of the two `bigint` values
+ */
+export const bigint_greater = (xg_a: bigint, xg_b: bigint): bigint => xg_a > xg_b? xg_a: xg_b;
+
+/**
+ * Returns the absolute value of the given `bigint` value, or the absolute value of the delta between
+ * the two given values if the 2nd argument is provided
+ */
+export const bigint_abs = (xg_a: bigint, xg_b=0n, xg_delta=xg_b-xg_a as never): bigint => xg_delta < 0n? -(xg_delta as bigint): xg_delta;
+
+
+/**
+ * Computes the maximum value among a list of `bigint` values
+ * @param a_values - list of values
+ * @returns the max value
+ */
+export const bigint_max = (a_values: bigint[]): bigint => a_values.reduce(bigint_greater, 0n);
+
+/**
+ * Computes the minimunm value among a list of `bigint` values
+ * @param a_values - list of values
+ * @returns the min value
+ */
+export const bigint_min = (a_values: bigint[]): bigint => a_values.reduce(bigint_lesser, 0n);
+
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const S_UUID_V4 = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx';
@@ -509,13 +557,13 @@ export const bytes_to_base64 = (atu8_buffer: Uint8Array): NaiveBase64 => {
  * @returns output buffer
  */
 export const base64_to_bytes = (sb64_data: string): Uint8Array => {
-	// count how many padding characters there are
-	const nl_padding = sb64_data.match(/=+$/)?.[0].length || 0;
-
 	// remove padding from string
 	sb64_data = sb64_data.replace(/=+$/, '');
 
+	// a buffer to store decoded sextets
 	let xb_work = 0;
+
+	// number of bits in the buffer
 	let nb_buffer = 0;
 
 	// prep output values
@@ -532,11 +580,8 @@ export const base64_to_bytes = (sb64_data: string): Uint8Array => {
 		// add 6 bits from index to buffer
 		xb_work = (xb_work << 6) | xb_char;
 
-		// increase size of buffer
-		nb_buffer += 6;
-
-		// a whole byte exists in the buffer
-		if(nb_buffer >= 8) {
+		// increase size of buffer which checking if a whole byte exists in the buffer
+		if((nb_buffer += 6) >= 8) {
 			// move byte out of buffer
 			a_out.push(xb_work >>> (nb_buffer -= 8));
 
