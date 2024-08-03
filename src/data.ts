@@ -38,7 +38,7 @@ export const bigint_greater = (xg_a: bigint, xg_b: bigint): bigint => xg_a > xg_
  * Returns the absolute value of the given `bigint` value, or the absolute value of the delta between
  * the two given values if the 2nd argument is provided
  */
-export const bigint_abs = (xg_a: bigint, xg_b=0n, xg_delta=xg_b-xg_a as never): bigint => xg_delta < 0n? -(xg_delta as bigint): xg_delta;
+export const bigint_abs = (xg_a: bigint, xg_b=0n, xg_delta=xg_a-xg_b as never): bigint => xg_delta < 0n? -(xg_delta as bigint): xg_delta;
 
 
 /**
