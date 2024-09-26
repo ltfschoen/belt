@@ -87,10 +87,9 @@ export const stringify_json: <
 	w_string extends string=NaiveJsonString,
 >(
 	w_json: JsonValue,
-	f_replacer?: Parameters<typeof JSON.stringify>[1],
+	f_replacer?: (this: any, si_key: string, z_value: any) => JsonValue<undefined>,
 	z_space?: Parameters<typeof JSON.stringify>[2],
 ) => w_string = JSON.stringify;
-
 
 /**
  * Strongly typed alias to `JSON.parse`
