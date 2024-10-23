@@ -81,6 +81,13 @@ type Uint8ArrayConstructorParams =
 
 
 /**
+ * Creates a new function that wraps the given function in a `try_sync` and returns the result without throwing
+ * @param f_attempt - the function to attempt
+ * @returns 
+ */
+export const safely_sync = <a_args extends unknown[], w_return>(f_attempt: (...a_args: a_args) => w_return) => (...a_args: a_args) => try_sync(_ => f_attempt(...a_args))[0];
+
+/**
  * Typed alias to `JSON.stringify`
  */
 export const stringify_json: <
@@ -789,9 +796,20 @@ export const base58_to_bytes = (sb58_buffer: string): Uint8Array => {
 };
 
 /**
+ * Cryptographically strong random bytes
+ * @param nb_len - number of bytes to fill
+ */
+export const crypto_random_bytes = (nb_len=32) => crypto.getRandomValues(bytes(nb_len));
+
+/**
  * Cryptographically strong random number in the range [0, 1)
  */
-export const crypto_random = (): number => crypto.getRandomValues(bytes(1))[0] / (2 ** 32);
+export const crypto_random_unit_double = (): number => crypto_random_bytes(1)[0] / (2 ** 32);
+
+/**
+ * @deprecated Replace with {@link crypto_random_unit_double}
+ */
+export const crypto_random = crypto_random_unit_double;
 
 /**
  * Generate a cryptographically strong random int within a given range
@@ -801,6 +819,6 @@ export const crypto_random_int = (x_a: number, x_b = 0): number => {
 	const x_max = Math.ceil(Math.max(x_a, x_b));
 
 	// confine to range
-	return Math.floor(crypto_random() * (x_max - x_min)) + x_min;
+	return Math.floor(crypto_random_unit_double() * (x_max - x_min)) + x_min;
 };
 
