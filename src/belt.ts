@@ -665,4 +665,12 @@ export const try_async = async<w_error, w_return>(f_try: () => Promisable<w_retu
 	}
 };
 
+/**
+ * Takes the given value and calls the given function with it as the first and only argument
+ * @param w_value 
+ * @param f_action 
+ * @returns 
+ */
+export const call_with = <w_value, w_return>(w_value: w_value, f_action: (w_use: w_value) => w_return): w_return => f_action(w_value);
+
 
