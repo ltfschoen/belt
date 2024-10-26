@@ -5,7 +5,7 @@ import type {Promisable} from './types';
 import {promise_resolve} from './async';
 import {__UNDEFINED, assign, create, die} from './belt';
 
-type PromisableCallback = () => Promisable<void>;
+type PromisableCallback<w_return=void> = () => Promisable<w_return>;
 
 
 export interface MutexPool {
@@ -22,7 +22,7 @@ export interface MutexPool {
 	 * Wait for a mutex, use it, and then return it to the pool
 	 * @param f_use
 	 */
-	use(this: MutexPool, f_use: PromisableCallback): Promise<void>;
+	use<w_return>(this: MutexPool, f_use: PromisableCallback<w_return>): Promise<w_return>;
 
 	/**
 	 * Wait until all tasks have finished

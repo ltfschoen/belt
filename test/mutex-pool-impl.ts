@@ -1,6 +1,6 @@
 import {expect, describe, test} from 'bun:test';
 
-import {timeout_exec, defer, microtask} from '../dist/mjs/async';
+import {timeout_exec, defer, microtask, timeout} from '../dist/mjs/async';
 import {MutexPool} from '../dist/mjs/mutex-pool';
 
 
@@ -43,5 +43,15 @@ describe('MutexPool', () => {
 
 		// exepct resolved value to be tick counter before last increment
 		expect(await dp_other).toBe(c_ticks-1);
+	});
+
+	test('`use()` forwards returned and awaited value', async() => {
+		const n_expect = await MutexPool(1).use(async() => {
+			await timeout(50);
+
+			return 1;
+		});
+
+		expect(n_expect).toBe(1);
 	});
 });
