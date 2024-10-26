@@ -425,6 +425,41 @@ export const bytes_to_bigint_be = bytes_to_biguint_be;
 
 
 /**
+ * Split a byte array into 'words' using the given delimiter
+ * @param xb_value the delimiter value to split by
+ * @returns list of words which will all be zeroed out when the parent instance is wiped
+ */
+export const bytes_split = (atu8_bytes: Uint8Array, xb_delimiter: number): Uint8Array[] => {
+	// array of pointers to words as buffers
+	let a_words: Uint8Array[] = [];
+
+	// byte index start of word
+	let ib_start = 0;
+
+	// while there are words remaining
+	for(;;) {
+		// find next matching byte
+		const ib_delim = atu8_bytes.indexOf(xb_delimiter, ib_start);
+
+		// no more matches
+		if(-1 === ib_delim) break;
+
+		// without copying data, save a reference to the word
+		a_words.push(atu8_bytes.subarray(ib_start, ib_delim));
+
+		// advanced the index for the start of the next word
+		ib_start = ib_delim + 1;
+	}
+
+	// push final word
+	a_words.push(atu8_bytes.subarray(ib_start));
+
+	// return list of words
+	return a_words;
+};
+
+
+/**
  * Concatenate a sequence of Uint8Arrays.
  * @param a_buffers the data to concatenate in order
  * @returns the concatenated output Uint8Array
