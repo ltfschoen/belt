@@ -121,3 +121,11 @@ export const defer = <w_return extends any=any>(): [
 		},
 	];
 };
+
+
+/**
+ * Alias the Promise.resolve call
+ * @param w_value 
+ * @returns 
+ */
+export const promise_resolve = <w_value>(w_value: w_value): Promise<Awaited<w_value>> => Promise.resolve(w_value);

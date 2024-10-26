@@ -11,3 +11,4 @@ export const subtle_sign = (...a: Parameters<SubtleCrypto['sign']>): ReturnType<
 export const subtle_unwrap_key = (...a: Parameters<SubtleCrypto['unwrapKey']>): ReturnType<SubtleCrypto['unwrapKey']> => crypto.subtle.unwrapKey(...a);
 export const subtle_verify = (...a: Parameters<SubtleCrypto['verify']>): ReturnType<SubtleCrypto['verify']> => crypto.subtle.verify(...a);
 export const subtle_wrap_key = (...a: Parameters<SubtleCrypto['wrapKey']>): ReturnType<SubtleCrypto['wrapKey']> => crypto.subtle.wrapKey(...a);
+
