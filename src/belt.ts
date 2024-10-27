@@ -41,6 +41,55 @@ export const F_NOOP = () => {};  // eslint-disable-line
 export const F_IDENTITY = <w_in, w_out=w_in>(w: w_in): w_out => w as unknown as w_out;  // eslint-disable-line
 
 /**
+ * AND two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_AND = (xb_a: number, xb_b: number): number => xb_a & xb_b;
+
+/**
+ * OR two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_OR = (xb_a: number, xb_b: number): number => xb_a | xb_b;
+
+/**
+ * XOR two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_XOR = (xb_a: number, xb_b: number): number => xb_a ^ xb_b;
+
+/**
+ * NAND two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_NAND = (xb_a: number, xb_b: number): number => ~xb_a | ~xb_b;
+
+/**
+ * NOR two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_NOR = (xb_a: number, xb_b: number): number => ~xb_a & ~xb_b;
+
+/**
+ * NXOR two bytes together
+ * @param xb_a 
+ * @param xb_b 
+ * @returns 
+ */
+export const F_NXOR = (xb_a: number, xb_b: number): number => ~(xb_a ^ xb_b);
+
+
+/**
  * Casts the given argument to a specific type.
  * @param w_value - value to cast
  * @returns the value casted to the target type
