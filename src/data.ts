@@ -1,4 +1,6 @@
 /* eslint-disable prefer-const */
+import type {Writable} from 'ts-toolbelt/out/Object/Writable';
+
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
 import type {JsonObject, JsonValue, NaiveJsonString} from './types';
 
@@ -457,6 +459,27 @@ export const bytes_split = (atu8_bytes: Uint8Array, xb_delimiter: number): Uint8
 	// return list of words
 	return a_words;
 };
+
+
+/**
+ * Takes two equal-length arrays and applies the given callback to each element-wise pair
+ * @param a_a 
+ * @param a_b 
+ * @param f_apply 
+ * @param a_out - the output
+ * @returns 
+ */
+/* eslint-disable @typescript-eslint/naming-convention */
+export const arrays_zip = <a_out extends ArrayLike<number> & {map(f_callback: (n_value: number, i_index: number) => any): any}>(
+	a_a: a_out,
+	a_b: ArrayLike<number>,
+	f_apply: (n_a: number, n_b: number) => number
+): a_out => a_a.length === a_b.length
+	// apply to each element
+	? a_a.map((n, i) => f_apply(n, a_b[i]))
+	// assert equal-length arrays
+	: die('Arrays must have identical length');
+/* eslint-enable */
 
 
 /**
