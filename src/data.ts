@@ -2,7 +2,7 @@
 import type {Writable} from 'ts-toolbelt/out/Object/Writable';
 
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
-import type {JsonObject, JsonValue, NaiveJsonString} from './types';
+import type {JsonObject, JsonValue, NaiveJsonString, Nilable} from './types';
 
 import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, die, try_sync} from './belt.js';
 
@@ -96,7 +96,7 @@ export const stringify_json: <
 	w_string extends string=NaiveJsonString,
 >(
 	w_json: JsonValue,
-	f_replacer?: (this: any, si_key: string, z_value: any) => JsonValue<undefined>,
+	f_replacer?: Nilable<(this: any, si_key: string, z_value: any) => JsonValue<undefined>>,
 	z_space?: Parameters<typeof JSON.stringify>[2],
 ) => w_string = JSON.stringify;
 

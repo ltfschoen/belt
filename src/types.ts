@@ -217,7 +217,7 @@ declare global {
 		 */
 		stringify<
 			s_subtype extends string,
-		>(value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): NaiveJsonString<s_subtype>;
+		>(value: any, replacer?: Nilable<(this: any, key: string, value: any) => any>, space?: string | number): NaiveJsonString<s_subtype>;
 
 		/**
 		 * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
