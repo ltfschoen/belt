@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type {Promisable} from './types';
 
-import {promise_resolve} from './async';
-import {__UNDEFINED, assign, create, die} from './belt';
+import {promise_resolve} from './async.js';
+import {__UNDEFINED, assign, create, die} from './belt.js';
 
 type PromisableCallback<w_return=void> = () => Promisable<w_return>;
 
