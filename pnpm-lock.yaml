@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  crypto:
+    specifier: ^1.0.1
+    version: 1.0.1
+
 devDependencies:
   '@blake.regalia/eslint-config-elite':
     specifier: ^0.4.4
@@ -17,6 +22,9 @@ devDependencies:
   '@rollup/plugin-typescript':
     specifier: ^11.1.6
     version: 11.1.6(rollup@4.13.0)(typescript@5.4.3)
+  '@solar-republic/crypto':
+    specifier: 0.2.8
+    version: 0.2.8
   '@types/node':
     specifier: ^20.11.30
     version: 20.11.30
@@ -399,16 +407,19 @@ packages:
     resolution: {integrity: sha512-VuL8sfhn+lYGAow5xht5jjV75k0CfudZpWI0IWdgc2uj20X6UfdLdq4BuA6CAnVEkyWb/NVhU6cs1o5TWtzS0A==}
     dev: true
 
+  /@blake.regalia/belt@0.32.6:
+    resolution: {integrity: sha512-wdsSNqj6EsyUR7VUtnRYlQNrBZs2c2wt9Fwwv59sVj42Tzf9f0aPSIRDwmbo1xnNi8r/oEhmHB9+blsoBUJbvA==}
+    dev: true
+
+  /@blake.regalia/belt@0.40.1:
+    resolution: {integrity: sha512-1KgtASOjGtzcC8IjL2gm4Ofwk9HvGW+l5VsqbKgxGrceEiVcccPf65eX20hek3p7prpNwbw9vImlXEU0Bii7Aw==}
+    dev: true
+
   /@blake.regalia/eslint-config-elite@0.4.4(@typescript-eslint/parser@7.4.0)(eslint@8.57.0)(ts-node@10.9.2)(typescript@5.4.3):
     resolution: {integrity: sha512-Lcpi2Y2yiY2WXDzr/mfrZNYSCx6J4se8iOG/WkCdqBlaolZH0QHyyJpgqzDG1XitlQ/I/ikpruhB1F6DwEEbfg==}
     peerDependencies:
       '@typescript-eslint/parser': '>=5'
       eslint: '>=3'
-    peerDependenciesMeta:
-      eslint-plugin-svelte:
-        optional: true
-      svelte-eslint-parser:
-        optional: true
     dependencies:
       '@blake.regalia/belt': 0.31.1
       '@typescript-eslint/eslint-plugin': 7.1.0(@typescript-eslint/parser@7.4.0)(eslint@8.57.0)(typescript@5.4.3)
@@ -435,6 +446,14 @@ packages:
       typescript: '>=5'
     dependencies:
       typescript: 5.4.3
+    dev: true
+
+  /@cosmjs/encoding@0.32.4:
+    resolution: {integrity: sha512-tjvaEy6ZGxJchiizzTn7HVRiyTg1i4CObRRaTRPknm5EalE13SV+TCHq38gIDfyUeden4fCuaBVEdBR5+ti7Hw==}
+    dependencies:
+      base64-js: 1.5.1
+      bech32: 1.1.4
+      readonly-date: 1.0.0
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:
@@ -991,6 +1010,21 @@ packages:
       '@sinonjs/commons': 3.0.1
     dev: true
 
+  /@solar-republic/crypto@0.2.8:
+    resolution: {integrity: sha512-PIeIoPjPcOezAzKOeEvAikzqhICki2EEzEhvVInjEDKnq6DKtCoe9sQoZzXI7C1bsooozlfroWET0NTsFV7AEA==}
+    dependencies:
+      '@blake.regalia/belt': 0.32.6
+      '@cosmjs/encoding': 0.32.4
+      '@solar-republic/wasm-secp256k1': 0.2.9
+      hash-wasm: 4.12.0
+    dev: true
+
+  /@solar-republic/wasm-secp256k1@0.2.9:
+    resolution: {integrity: sha512-fjDX7u9jNfpKcXvlVikHDrmw0rlgwq4aToqXM+XltVCbZcL+8RKj1530IaIcbU7WtNj8ve6zC2VcTzBw2J5Jag==}
+    dependencies:
+      '@blake.regalia/belt': 0.40.1
+    dev: true
+
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     dev: true
@@ -1528,6 +1562,14 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
+  /base64-js@1.5.1:
+    resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
+    dev: true
+
+  /bech32@1.1.4:
+    resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
+    dev: true
+
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
     dependencies:
@@ -1729,6 +1771,11 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /crypto@1.0.1:
+    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
+    dev: false
 
   /css-tree@2.3.1:
     resolution: {integrity: sha512-6Fv1DV/TYw//QF5IzQdqsNDjx/wc8TrMBZsqjL9eW01tWb7R7k/mq+/VXfJCl7SoD5emsJop9cOByJZfs8hYIw==}
@@ -2326,6 +2373,10 @@ packages:
   /has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
+    dev: true
+
+  /hash-wasm@4.12.0:
+    resolution: {integrity: sha512-+/2B2rYLb48I/evdOIhP+K/DD2ca2fgBjp6O+GBEnCDk2e4rpeXIK8GvIyRPjTezgmWn9gmKwkQjjx6BtqDHVQ==}
     dev: true
 
   /hasown@2.0.1:
@@ -3355,6 +3406,10 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: true
+
+  /readonly-date@1.0.0:
+    resolution: {integrity: sha512-tMKIV7hlk0h4mO3JTmmVuIlJVXjKk3Sep9Bf5OH0O+758ruuVkUy2J9SttDLm91IEX/WHlXPSpxMGjPj4beMIQ==}
     dev: true
 
   /require-directory@2.1.1:

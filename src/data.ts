@@ -2,6 +2,7 @@
 import type {NaiveBase58, NaiveBase64, NaiveBase93, NaiveHexLower} from './strings';
 import type {JsonObject, JsonValue, StringKeysOf, NaiveJsonString} from './types';
 
+import crypto from 'crypto';
 import {XG_8, is_array, is_dict_es, is_string, entries, from_entries, transform_values, die, try_sync} from './belt.js';
 
 export const SI_HASH_ALGORITHM_SHA256 = 'SHA-256';
@@ -14,7 +15,8 @@ const S_UUID_V4 = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx';
 const R_UUID_V4 = /[xy]/g;
 
 // @ts-expect-error in case crypto global is not defined
-export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID(): (): string => {
+// export const uuid_v4 = globalThis.crypto?.randomUUID? () => crypto.randomUUID(): (): string => {
+	export const uuid_v4 = crypto?.randomUUID? () => crypto.randomUUID(): (): string => {
 	let xt_now = Date.now();
 	if('undefined' !== typeof performance) xt_now += performance.now();
 	return S_UUID_V4.replace(R_UUID_V4, (s) => {

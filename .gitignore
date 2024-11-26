@@ -15,6 +15,10 @@
 .yarn-integrity
 .yarn-error
 
+.pnp.cjs
+.pnp.loader.mjs
+.yarn/
+
 # editor-specific files and directories
 **/.vscode
 
